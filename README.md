@@ -1,0 +1,104 @@
+<div align="center">
+
+# Vitrine
+
+**E-commerce multicategoria desenvolvido como projeto de portfólio**
+
+![Java](https://img.shields.io/badge/Java-21-0f172a?style=flat-square&logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-4-0f172a?style=flat-square&logo=springboot&logoColor=white)
+![Angular](https://img.shields.io/badge/Angular-22-0f172a?style=flat-square&logo=angular&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon-0f172a?style=flat-square&logo=postgresql&logoColor=white)
+![Status](https://img.shields.io/badge/status-em_desenvolvimento-4f46e5?style=flat-square)
+
+</div>
+
+---
+
+## Sobre
+
+A Vitrine é uma loja virtual fictícia que reproduz os fluxos principais de um marketplace: vitrine de ofertas, busca com filtros, página de produto e carrinho. O objetivo é demonstrar uma aplicação full-stack com API REST em Spring Boot e SPA em Angular, com foco em código limpo, layout responsivo e boa experiência de uso.
+
+> Loja fictícia, sem venda real de produtos.
+
+## Funcionalidades
+
+| Módulo | Escopo |
+|---|---|
+| Home | Banner de campanhas, cupons, categorias, ofertas do dia com contador e mais vendidos |
+| Busca e listagem | Filtros por categoria, preço, avaliação, marca e frete; ordenação, grade/lista e paginação |
+| Produto | Galeria, variações, quantidade, parcelamento, desconto no Pix, frete por CEP, especificações e avaliações |
+| Carrinho | Gaveta lateral, cupom de desconto, progresso de frete grátis e resumo do pedido |
+| Interface | Layout responsivo (mobile e desktop) e modo escuro |
+
+## Tecnologias
+
+**Backend:** Java 21, Spring Boot 4, Spring Web MVC, Spring Data JPA, Bean Validation, Flyway
+
+**Frontend:** Angular 22 (standalone components), TypeScript, SCSS
+
+**Banco de dados:** PostgreSQL hospedado no Neon
+
+## Estrutura do repositório
+
+```
+vitrine/
+├── backend/     API REST (vitrine-api)
+└── frontend/    Aplicação Angular
+```
+
+## Execução local
+
+### Pré-requisitos
+
+- Java 21
+- Node.js LTS
+- PostgreSQL (local ou Neon)
+
+### Backend
+
+Configure as variáveis de ambiente de conexão:
+
+| Variável | Descrição |
+|---|---|
+| `DB_URL` | URL JDBC, ex.: `jdbc:postgresql://localhost:5432/vitrine` |
+| `DB_USER` | Usuário do banco |
+| `DB_PASSWORD` | Senha do banco |
+
+```bash
+cd backend
+./mvnw spring-boot:run
+```
+
+As migrations do Flyway são aplicadas na inicialização e o Hibernate apenas valida o schema. A API fica disponível em `http://localhost:8080`.
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm start
+```
+
+A aplicação fica disponível em `http://localhost:4200`.
+
+## Testes
+
+```bash
+cd backend && ./mvnw test
+cd frontend && npm test
+```
+
+## Roadmap
+
+- [x] Estrutura inicial do backend e do frontend
+- [ ] Catálogo de produtos e categorias
+- [ ] Home e vitrine de ofertas
+- [ ] Busca com filtros e paginação
+- [ ] Página de produto e avaliações
+- [ ] Carrinho e cupons
+- [ ] Modo escuro e versão mobile
+- [ ] Deploy
+
+## Autoria
+
+Desenvolvido por [Gabrielle Caixeta](https://github.com/caixetss).
