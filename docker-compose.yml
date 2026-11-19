@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: vitrine-postgres
+    environment:
+      POSTGRES_DB: vitrine
+      POSTGRES_USER: vitrine
+      POSTGRES_PASSWORD: vitrine
+    ports:
+      - "5433:5432"
+    volumes:
+      - vitrine-dados:/var/lib/postgresql/data
+
+volumes:
+  vitrine-dados:

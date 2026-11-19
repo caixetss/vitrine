@@ -85,22 +85,31 @@ Documentação: [histórias de usuário](docs/historias-de-usuario.md), [modelo 
 - Java 21
 - Maven 3.9+
 - Node.js LTS
-- PostgreSQL (local ou Neon)
+- Docker (banco local e testes do backend)
+
+### Banco
+
+```bash
+docker compose up -d
+```
+
+Sobe um PostgreSQL 17 na porta `5433`, com banco, usuário e senha `vitrine`.
 
 ### Backend
 
-Configure as variáveis de ambiente de conexão:
+```bash
+cd backend
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
+```
+
+O perfil `dev` já aponta para o banco do Docker e mostra o SQL no log. Para usar outro banco (como o Neon), defina as variáveis listadas em [`backend/.env.example`](backend/.env.example):
 
 | Variável | Descrição |
 |---|---|
-| `DB_URL` | URL JDBC, ex.: `jdbc:postgresql://localhost:5432/vitrine` |
+| `DB_URL` | URL JDBC, ex.: `jdbc:postgresql://localhost:5433/vitrine` |
 | `DB_USER` | Usuário do banco |
 | `DB_PASSWORD` | Senha do banco |
-
-```bash
-cd backend
-mvn spring-boot:run
-```
+| `CORS_ORIGENS` | Origens liberadas para o front, separadas por vírgula. Padrão: `http://localhost:4200` |
 
 As migrations do Flyway são aplicadas na inicialização e o Hibernate apenas valida o schema. A API fica disponível em `http://localhost:8080`.
 
