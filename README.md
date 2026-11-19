@@ -30,6 +30,33 @@ A Vitrine é uma loja virtual fictícia que reproduz os fluxos principais de um 
 | Carrinho | Gaveta lateral, cupom de desconto, progresso de frete grátis e resumo do pedido |
 | Interface | Layout responsivo (mobile e desktop) e modo escuro |
 
+## Escopo do MVP
+
+A primeira versão cobre o fluxo de **descobrir um produto e montá-lo no carrinho**. O cliente navega sem login e o carrinho fica salvo no navegador.
+
+**Entra no MVP**
+
+- Catálogo de categorias e marcas
+- Listagem por categoria e busca por nome
+- Filtros por preço, avaliação, marca e frete grátis, com ordenação e paginação
+- Página de produto com galeria, variação de cor, preço, parcelamento, valor no Pix, especificações e avaliações
+- Carrinho: adicionar, remover, alterar quantidade, total e economia
+- Home com categorias, ofertas e mais vendidos
+- Layout responsivo
+
+**Fica para depois**
+
+- Login, cadastro e área "Minha conta"
+- Favoritos
+- Cupons de desconto
+- Cálculo de frete por CEP e prazo de entrega
+- Checkout, pagamento e pedidos
+- Escrever avaliação
+- Newsletter
+- Modo escuro
+
+Nos mockups, elementos fora do MVP (cupom, CEP, favoritos) podem aparecer na tela sem funcionar ainda.
+
 ## Tecnologias
 
 **Backend:** Java 21, Spring Boot 4, Spring Web MVC, Spring Data JPA, Bean Validation, Flyway
