@@ -8,6 +8,8 @@
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-4-0f172a?style=flat-square&logo=springboot&logoColor=white)
 ![Angular](https://img.shields.io/badge/Angular-22-0f172a?style=flat-square&logo=angular&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon-0f172a?style=flat-square&logo=postgresql&logoColor=white)
+[![Backend](https://github.com/caixetss/vitrine/actions/workflows/backend.yml/badge.svg)](https://github.com/caixetss/vitrine/actions/workflows/backend.yml)
+[![Frontend](https://github.com/caixetss/vitrine/actions/workflows/frontend.yml/badge.svg)](https://github.com/caixetss/vitrine/actions/workflows/frontend.yml)
 ![Status](https://img.shields.io/badge/status-em_desenvolvimento-4f46e5?style=flat-square)
 
 </div>
@@ -81,6 +83,7 @@ Documentação: [histórias de usuário](docs/historias-de-usuario.md), [modelo 
 ### Pré-requisitos
 
 - Java 21
+- Maven 3.9+
 - Node.js LTS
 - PostgreSQL (local ou Neon)
 
@@ -96,7 +99,7 @@ Configure as variáveis de ambiente de conexão:
 
 ```bash
 cd backend
-./mvnw spring-boot:run
+mvn spring-boot:run
 ```
 
 As migrations do Flyway são aplicadas na inicialização e o Hibernate apenas valida o schema. A API fica disponível em `http://localhost:8080`.
@@ -114,7 +117,7 @@ A aplicação fica disponível em `http://localhost:4200`.
 ## Testes
 
 ```bash
-cd backend && ./mvnw test
+cd backend && mvn test
 cd frontend && npm test
 ```
 
