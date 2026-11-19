@@ -74,6 +74,8 @@ vitrine/
 └── frontend/    Aplicação Angular
 ```
 
+Documentação: [histórias de usuário](docs/historias-de-usuario.md), [modelo de dados](docs/modelo-dados.md), [contrato da API](docs/api.md) e [arquitetura e decisões](docs/decisoes.md).
+
 ## Execução local
 
 ### Pré-requisitos
