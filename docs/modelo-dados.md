@@ -33,7 +33,7 @@ Agrupa produtos. Pode ter uma categoria pai (Áudio > Fones de ouvido).
 | slug | varchar(80) | sim | único; usado na URL |
 | icone | varchar(40) | não | nome do ícone |
 | id_categoria_pai | uuid | não | FK `categoria.id`; nulo = categoria principal |
-| ordem_exibicao | smallint | sim | padrão `0`; posição no menu e na home (1 aparece primeiro) |
+| ordem_exibicao | integer | sim | padrão `0`; posição no menu e na home (1 aparece primeiro) |
 | eh_inativo | boolean | sim | padrão `false` |
 | criado_em | timestamptz | sim | preenchido na inclusão |
 | atualizado_em | timestamptz | sim | atualizado a cada alteração |
@@ -93,7 +93,7 @@ Cada cor de um produto. Todo produto tem ao menos uma variação.
 | id_produto | uuid | sim | FK `produto.id` |
 | url | varchar(500) | sim | |
 | texto_alternativo | varchar(200) | sim | acessibilidade |
-| posicao_galeria | smallint | sim | única por produto; `0` é a capa |
+| posicao_galeria | integer | sim | única por produto; `0` é a capa |
 | criado_em | timestamptz | sim | preenchido na inclusão |
 | atualizado_em | timestamptz | sim | atualizado a cada alteração |
 
@@ -105,7 +105,7 @@ Cada cor de um produto. Todo produto tem ao menos uma variação.
 | id_produto | uuid | sim | FK `produto.id` |
 | nome | varchar(60) | sim | único por produto |
 | valor | varchar(200) | sim | |
-| ordem_exibicao | smallint | sim | |
+| ordem_exibicao | integer | sim | |
 | criado_em | timestamptz | sim | preenchido na inclusão |
 | atualizado_em | timestamptz | sim | atualizado a cada alteração |
 
@@ -116,7 +116,7 @@ Cada cor de um produto. Todo produto tem ao menos uma variação.
 | id | uuid | sim | chave primária |
 | id_produto | uuid | sim | FK `produto.id` |
 | nome_autor | varchar(80) | sim | |
-| nota | smallint | sim | entre 1 e 5 |
+| nota | integer | sim | entre 1 e 5 |
 | titulo | varchar(120) | sim | |
 | comentario | text | não | |
 | eh_compra_verificada | boolean | sim | padrão `false` |
@@ -153,7 +153,7 @@ erDiagram
         varchar slug UK
         varchar icone
         uuid id_categoria_pai FK
-        smallint ordem_exibicao
+        integer ordem_exibicao
         boolean eh_inativo
     }
     marca {
@@ -191,20 +191,20 @@ erDiagram
         uuid id_produto FK
         varchar url
         varchar texto_alternativo
-        smallint posicao_galeria
+        integer posicao_galeria
     }
     produto_especificacao {
         uuid id PK
         uuid id_produto FK
         varchar nome
         varchar valor
-        smallint ordem_exibicao
+        integer ordem_exibicao
     }
     avaliacao {
         uuid id PK
         uuid id_produto FK
         varchar nome_autor
-        smallint nota
+        integer nota
         varchar titulo
         text comentario
         boolean eh_compra_verificada

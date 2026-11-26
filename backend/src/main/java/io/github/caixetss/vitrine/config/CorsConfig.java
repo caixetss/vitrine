@@ -1,4 +1,4 @@
-package io.github.caixetss.vitrine.compartilhado.config;
+package io.github.caixetss.vitrine.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

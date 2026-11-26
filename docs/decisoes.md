@@ -16,39 +16,21 @@ Navegador (Angular)  --HTTP/JSON-->  API (Spring Boot)  --JPA-->  PostgreSQL (Ne
 
 ### Pacotes
 
-Pacote base `io.github.caixetss.vitrine`, organizado por funcionalidade:
+Pacote base `io.github.caixetss.vitrine`, organizado por camada:
 
 ```
 io.github.caixetss.vitrine
 ├── VitrineApiApplication.java
-├── categoria/
-│   ├── CategoriaController.java
-│   ├── CategoriaService.java
-│   ├── CategoriaRepository.java
-│   ├── Categoria.java              (entidade)
-│   └── CategoriaDto.java           (record)
-├── marca/
-├── produto/
-│   ├── ProdutoController.java
-│   ├── ProdutoService.java
-│   ├── ProdutoRepository.java
-│   ├── ProdutoSpecifications.java  (filtros dinâmicos)
-│   ├── Produto.java
-│   ├── ProdutoVariacao.java
-│   ├── ProdutoImagem.java
-│   ├── ProdutoEspecificacao.java
-│   ├── ProdutoResumoDto.java
-│   ├── ProdutoDetalheDto.java
-│   └── FiltrosProdutoDto.java
-├── avaliacao/
-└── compartilhado/
-    ├── PaginaDto.java
-    ├── ErroDto.java
-    ├── RecursoNaoEncontradoException.java
-    └── TratadorGlobalExcecoes.java
+├── config/        CorsConfig
+├── controller/    CategoriaController, ProdutoController, ...
+├── service/       CategoriaService, ProdutoService, ...
+├── repository/    CategoriaRepository, ProdutoRepository, ProdutoSpecifications, ...
+├── entidade/      Categoria, Marca, Produto, ProdutoVariacao, ProdutoImagem, ...
+├── dto/           CategoriaDto, ProdutoResumoDto, ProdutoDetalheDto, PaginaDto, ErroDto, ...
+└── excecao/       RecursoNaoEncontradoException, TratadorGlobalExcecoes
 ```
 
-Sem subpastas `controller/`, `service/` dentro de cada funcionalidade: com 5 a 10 arquivos por pacote, a pasta plana é mais fácil de navegar. Se um pacote passar de ~15 arquivos, aí sim dividir.
+Os testes ficam no mesmo pacote da classe testada (`service/CategoriaServiceTest`, `controller/CategoriaControllerIntegrationTest`).
 
 ### Camadas
 
@@ -120,9 +102,9 @@ src/app/
 | # | Decisão | Alternativas | Motivo | Custo |
 |---|---|---|---|---|
 | D1 | Monólito em camadas (controller, service, repository) | hexagonal, microsserviços | o MVP é um CRUD de leitura; mais camadas seriam código sem uso | se surgir integração externa (pagamento), pode pedir uma camada de porta/adaptador |
-| D2 | Pacote por funcionalidade | pacote por camada (`controllers/`, `services/`) | tudo de "produto" fica junto; apagar ou mudar uma funcionalidade mexe em uma pasta | código compartilhado precisa de um lugar explícito (`compartilhado/`) |
+| D2 | Pacote por camada (`controller/`, `service/`, `repository/`, `entidade/`, `dto/`) | pacote por funcionalidade (`categoria/`, `produto/`) | padrão mais conhecido; com poucas funcionalidades, cada pasta continua pequena | mudar uma funcionalidade mexe em várias pastas; se o projeto crescer muito, reavaliar a divisão por funcionalidade |
 | D3 | Pacote base `io.github.caixetss.vitrine` | `vitrine` | segue o `groupId` do `pom.xml` e alinha com o pacote dos testes | nenhum |
-| D4 | Conversão entidade → DTO com método estático no record (`ProdutoResumoDto.de(produto)`) | MapStruct | poucos DTOs; evita dependência e geração de código | se os DTOs crescerem muito, reavaliar MapStruct |
+| D4 | Conversão entidade → DTO com construtor extra no record (`new ProdutoResumoDto(produto)`) | MapStruct, método estático (`de`, `from`) | poucos DTOs; evita dependência; o `new` já diz o que acontece, sem nome para inventar | se os DTOs crescerem muito, reavaliar MapStruct |
 | D5 | DTOs como `record` | classes com Lombok | imutáveis e sem boilerplate, nativo do Java 21 | nenhum |
 | D6 | Filtros dinâmicos com Specifications | `@Query` com vários `IS NULL OR` | combina só os filtros enviados e mantém a consulta legível | a busca sem acento usa a função `translate` do PostgreSQL via `criteriaBuilder.function` |
 | D7 | Testes de integração com Testcontainers | H2 | banco igual ao de produção | precisa do Docker rodando |
