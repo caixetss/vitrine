@@ -18,8 +18,8 @@ public class CategoriaController {
 	private final CategoriaService categoriaService;
 
 	@GetMapping
-	public List<CategoriaDto> buscaListaCategoria() {
-		return categoriaService.buscaListaCategoria();
+	public List<CategoriaDto> buscaListaCategoriaEmArvore() {
+		return categoriaService.buscaListaCategoriaEmArvore();
 	}
 
 }

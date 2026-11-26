@@ -33,10 +33,10 @@ class CategoriaServiceTest {
 		Categoria celulares = novaCategoria("Celulares", null);
 		Categoria fones = novaCategoria("Fones de ouvido", audio);
 		Categoria caixas = novaCategoria("Caixas de som", audio);
-		when(categoriaRepository.findByEhInativoFalseOrderByOrdemExibicao())
+		when(categoriaRepository.buscaListaCategoriaAtiva())
 				.thenReturn(List.of(audio, celulares, fones, caixas));
 
-		List<CategoriaDto> resultado = categoriaService.buscaListaCategoria();
+		List<CategoriaDto> resultado = categoriaService.buscaListaCategoriaEmArvore();
 
 		assertThat(resultado).extracting(CategoriaDto::nome).containsExactly("Áudio", "Celulares");
 		assertThat(resultado.get(0).subcategorias()).extracting(CategoriaDto::nome)
@@ -48,10 +48,10 @@ class CategoriaServiceTest {
 	void buscaListaCategoria_ignoraSubcategoriaCujaPrincipalNaoVeioNaLista() {
 		Categoria principalInativa = novaCategoria("Livros", null);
 		Categoria subcategoria = novaCategoria("Ficção", principalInativa);
-		when(categoriaRepository.findByEhInativoFalseOrderByOrdemExibicao())
+		when(categoriaRepository.buscaListaCategoriaAtiva())
 				.thenReturn(List.of(subcategoria));
 
-		assertThat(categoriaService.buscaListaCategoria()).isEmpty();
+		assertThat(categoriaService.buscaListaCategoriaEmArvore()).isEmpty();
 	}
 
 	private Categoria novaCategoria(String nome, Categoria categoriaPai) {

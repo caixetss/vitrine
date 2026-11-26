@@ -20,18 +20,18 @@ public class CategoriaService {
 	private final CategoriaRepository categoriaRepository;
 
 	@Transactional(readOnly = true)
-	public List<CategoriaDto> buscaListaCategoria() {
-		List<Categoria> categoriasAtivas = categoriaRepository.findByEhInativoFalseOrderByOrdemExibicao();
+	public List<CategoriaDto> buscaListaCategoriaEmArvore() {
+		List<Categoria> categoriasAtivas = categoriaRepository.buscaListaCategoriaAtiva();
 
-		Map<UUID, List<CategoriaDto>> subcategoriasPorIdPai = categoriasAtivas.stream()
+		Map<UUID, List<CategoriaDto>> subcategoriasAgrupadasPorPai = categoriasAtivas.stream()
 				.filter(categoria -> !categoria.ehPrincipal())
 				.collect(Collectors.groupingBy(
-						categoria -> categoria.getCategoriaPai().getId(),
+						subcategoria -> subcategoria.getCategoriaPai().getId(),
 						Collectors.mapping(subcategoria -> new CategoriaDto(subcategoria, List.of()), Collectors.toList())));
 
 		return categoriasAtivas.stream()
 				.filter(Categoria::ehPrincipal)
-				.map(principal -> new CategoriaDto(principal, subcategoriasPorIdPai.getOrDefault(principal.getId(), List.of())))
+				.map(categoriaPrincipal -> new CategoriaDto(categoriaPrincipal, subcategoriasAgrupadasPorPai.getOrDefault(categoriaPrincipal.getId(), List.of())))
 				.toList();
 	}
 
