@@ -78,7 +78,7 @@ Fluxo de dependência só para baixo: `Controller → Service → Repository`. U
 | Unidade | JUnit 5, Mockito, AssertJ | regras do service |
 | Integração | `@SpringBootTest` + Testcontainers (PostgreSQL) | endpoint de ponta a ponta, com as migrations reais |
 
-Testcontainers em vez de H2: a busca usa `unaccent` e `pg_trgm`, que o H2 não tem.
+Testcontainers em vez de H2: os testes rodam no mesmo PostgreSQL de produção, com os mesmos `CHECK` e tipos.
 
 ## 3. Frontend
 
@@ -124,10 +124,11 @@ src/app/
 | D3 | Pacote base `io.github.caixetss.vitrine` | `vitrine` | segue o `groupId` do `pom.xml` e alinha com o pacote dos testes | nenhum |
 | D4 | Conversão entidade → DTO com método estático no record (`ProdutoResumoDto.de(produto)`) | MapStruct | poucos DTOs; evita dependência e geração de código | se os DTOs crescerem muito, reavaliar MapStruct |
 | D5 | DTOs como `record` | classes com Lombok | imutáveis e sem boilerplate, nativo do Java 21 | nenhum |
-| D6 | Filtros dinâmicos com Specifications | `@Query` com vários `IS NULL OR` | combina só os filtros enviados e mantém a consulta legível | a busca sem acento precisa de função SQL (`unaccent`) via `criteriaBuilder.function` |
-| D7 | Testes de integração com Testcontainers | H2 | banco igual ao de produção, com as extensões | precisa do Docker rodando |
+| D6 | Filtros dinâmicos com Specifications | `@Query` com vários `IS NULL OR` | combina só os filtros enviados e mantém a consulta legível | a busca sem acento usa a função `translate` do PostgreSQL via `criteriaBuilder.function` |
+| D7 | Testes de integração com Testcontainers | H2 | banco igual ao de produção | precisa do Docker rodando |
 | D8 | Estado no front com Signals | NgRx, só RxJS | o estado é pequeno (carrinho e filtros); Signals já vem no Angular | se o estado global crescer, reavaliar |
 | D9 | Carrinho no `localStorage` | tabela no banco | o MVP não tem login | ao criar login, migrar o carrinho para a API |
 | D10 | Sem paginação em `/categorias` | paginar | a lista tem poucas dezenas de itens | nenhum |
+| D11 | Regras de negócio e validações (preço > 0, nota de 1 a 5, estoque >= 0, formato da cor) ficam no Java, com Bean Validation e no service | `CHECK` no banco | a regra fica num lugar só, testável e com mensagem de erro clara | o banco aceita valor inválido se alguém gravar direto por SQL. O banco guarda só a estrutura: tipo, `NOT NULL`, chaves, `UNIQUE` e valores padrão |
 
 Ao tomar uma decisão nova, adicionar uma linha nesta tabela.

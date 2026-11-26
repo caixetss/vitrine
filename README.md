@@ -109,7 +109,7 @@ O perfil `dev` já aponta para o banco do Docker e mostra o SQL no log. Para usa
 | `DB_URL` | URL JDBC, ex.: `jdbc:postgresql://localhost:5433/vitrine` |
 | `DB_USER` | Usuário do banco |
 | `DB_PASSWORD` | Senha do banco |
-| `CORS_ORIGENS` | Origens liberadas para o front, separadas por vírgula. Padrão: `http://localhost:4200` |
+| `CORS_ORIGENS_PERMITIDAS` | Origens liberadas para o front, separadas por vírgula. Padrão: `http://localhost:4200` |
 
 As migrations do Flyway são aplicadas na inicialização e o Hibernate apenas valida o schema. A API fica disponível em `http://localhost:8080`.
 

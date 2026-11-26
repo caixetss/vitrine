@@ -58,7 +58,7 @@ Corpo padrão (`ErroDto`):
 
 ## 4. `GET /api/categorias`
 
-Árvore de categorias ativas, ordenada por `ordem`. Subcategorias inativas também ficam de fora.
+Árvore de categorias ativas, ordenada por `ordem_exibicao`. Subcategorias inativas também ficam de fora.
 
 ```json
 [
@@ -120,7 +120,7 @@ Item (`ProdutoResumoDto`):
 }
 ```
 
-`imagemCapa` é a imagem de `ordem = 0`. Desconto, parcela e valor no Pix são calculados no front.
+`imagemCapa` é a imagem de `posicaoGaleria = 0`. Desconto, parcela e valor no Pix são calculados no front.
 
 Exemplo: `GET /api/produtos?categoria=audio&precoMax=500&marcas=jbl&ordem=menor-preco&pagina=0` devolve um `PaginaDto` de `ProdutoResumoDto`.
 
@@ -162,13 +162,13 @@ Página do produto (`ProdutoDetalheDto`). Campos do card mais:
     "slug": "fones-de-ouvido",
     "categoriaPai": { "nome": "Áudio", "slug": "audio" }
   },
-  "imagens": [ { "url": "https://...", "textoAlternativo": "Fone JBL preto, vista frontal", "ordem": 0 } ],
-  "variacoes": [ { "id": "9e7a...", "nomeCor": "Preto", "corHex": "#111111", "sku": "JBL520-PRT", "estoque": 12 } ],
+  "imagens": [ { "url": "https://...", "textoAlternativo": "Fone JBL preto, vista frontal", "posicaoGaleria": 0 } ],
+  "variacoes": [ { "id": "9e7a...", "nomeCor": "Preto", "corHex": "#111111", "codigoEstoque": "JBL520-PRT", "estoque": 12 } ],
   "especificacoes": [ { "nome": "Bateria", "valor": "Até 57 h" } ]
 }
 ```
 
-- `imagens` por `ordem`; `especificacoes` por `ordem`; só variações ativas.
+- `imagens` por `posicaoGaleria`; `especificacoes` por `ordem_exibicao`; só variações ativas.
 - `categoriaPai` é `null` em categoria principal.
 - 404 se o slug não existir ou o produto estiver inativo.
 
@@ -209,7 +209,7 @@ Paginado (padrão `tamanho=5`), mais recentes primeiro.
 
 | Pergunta | Decisão | Motivo |
 |---|---|---|
-| O que é "relevância"? | `total_vendidos` desc | sem busca por texto, é o melhor sinal disponível. Com `busca`, pode passar a usar a similaridade do `pg_trgm` depois |
+| O que é "relevância"? | `total_vendidos` desc | é o melhor sinal disponível sem um motor de busca |
 | Slug ou id na URL? | slug | URL legível e boa para SEO; o id continua no JSON para o carrinho |
 | Endpoint separado para filtros? | sim | a listagem fica simples e as contagens podem ser carregadas em paralelo |
 | Avaliações dentro do produto? | não, endpoint próprio | são paginadas e podem ser muitas |

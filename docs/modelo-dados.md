@@ -20,6 +20,8 @@ Calculados na tela, sem coluna: desconto (%), parcela (preço / 10), valor no Pi
 
 Todas as tabelas ficam no schema `public`, usam `uuid` como chave primária e têm as colunas de auditoria `criado_em` e `atualizado_em`.
 
+A coluna **Regra** descreve validações de negócio. Elas são feitas no código Java (decisão D11); o banco garante só tipo, obrigatoriedade, chaves e unicidade.
+
 ### categoria
 
 Agrupa produtos. Pode ter uma categoria pai (Áudio > Fones de ouvido).
@@ -31,7 +33,7 @@ Agrupa produtos. Pode ter uma categoria pai (Áudio > Fones de ouvido).
 | slug | varchar(80) | sim | único; usado na URL |
 | icone | varchar(40) | não | nome do ícone |
 | id_categoria_pai | uuid | não | FK `categoria.id`; nulo = categoria principal |
-| ordem | smallint | sim | padrão `0`; ordem de exibição no menu |
+| ordem_exibicao | smallint | sim | padrão `0`; posição no menu e na home (1 aparece primeiro) |
 | eh_inativo | boolean | sim | padrão `false` |
 | criado_em | timestamptz | sim | preenchido na inclusão |
 | atualizado_em | timestamptz | sim | atualizado a cada alteração |
@@ -77,7 +79,7 @@ Cada cor de um produto. Todo produto tem ao menos uma variação.
 | id_produto | uuid | sim | FK `produto.id` |
 | nome_cor | varchar(40) | sim | único por produto |
 | cor_hex | char(7) | sim | formato `#RRGGBB` |
-| sku | varchar(40) | sim | único global |
+| codigo_estoque | varchar(40) | sim | único global; código interno da variação (SKU) |
 | estoque | integer | sim | `>= 0` |
 | eh_inativo | boolean | sim | padrão `false` |
 | criado_em | timestamptz | sim | preenchido na inclusão |
@@ -91,7 +93,7 @@ Cada cor de um produto. Todo produto tem ao menos uma variação.
 | id_produto | uuid | sim | FK `produto.id` |
 | url | varchar(500) | sim | |
 | texto_alternativo | varchar(200) | sim | acessibilidade |
-| ordem | smallint | sim | única por produto; ordem `0` é a capa |
+| posicao_galeria | smallint | sim | única por produto; `0` é a capa |
 | criado_em | timestamptz | sim | preenchido na inclusão |
 | atualizado_em | timestamptz | sim | atualizado a cada alteração |
 
@@ -103,7 +105,7 @@ Cada cor de um produto. Todo produto tem ao menos uma variação.
 | id_produto | uuid | sim | FK `produto.id` |
 | nome | varchar(60) | sim | único por produto |
 | valor | varchar(200) | sim | |
-| ordem | smallint | sim | |
+| ordem_exibicao | smallint | sim | |
 | criado_em | timestamptz | sim | preenchido na inclusão |
 | atualizado_em | timestamptz | sim | atualizado a cada alteração |
 
@@ -151,7 +153,7 @@ erDiagram
         varchar slug UK
         varchar icone
         uuid id_categoria_pai FK
-        smallint ordem
+        smallint ordem_exibicao
         boolean eh_inativo
     }
     marca {
@@ -180,7 +182,7 @@ erDiagram
         uuid id_produto FK
         varchar nome_cor
         char cor_hex
-        varchar sku UK
+        varchar codigo_estoque UK
         integer estoque
         boolean eh_inativo
     }
@@ -189,14 +191,14 @@ erDiagram
         uuid id_produto FK
         varchar url
         varchar texto_alternativo
-        smallint ordem
+        smallint posicao_galeria
     }
     produto_especificacao {
         uuid id PK
         uuid id_produto FK
         varchar nome
         varchar valor
-        smallint ordem
+        smallint ordem_exibicao
     }
     avaliacao {
         uuid id PK
@@ -222,7 +224,7 @@ erDiagram
 | Produto em mais de uma categoria? | 1:N, N:N | 1:N | mais simples; os filtros só precisam de uma |
 | "Ofertas do dia" e "Mais vendidos" precisam de tabela? | tabela, consulta | consulta | ofertas = maior desconto; mais vendidos = `total_vendidos`. Tabela só quando houver curadoria manual |
 | Parcelamento e Pix no banco? | colunas, regra no código | regra no código | são regras da loja (10x, 5%), iguais para todos os produtos |
-| Busca sem acento | `LIKE`, `unaccent` + `pg_trgm` | `unaccent` + `pg_trgm` | "audio" precisa achar "Áudio"; trigrama deixa a busca parcial rápida |
+| Busca sem acento | extensões `unaccent` + `pg_trgm`, `translate` nativo | `lower` + `translate` + `LIKE` | "audio" precisa achar "Áudio". CRUD pequeno não precisa de extensão nem de índice de texto; o catálogo cabe numa leitura completa |
 | Soft delete | apagar, `eh_inativo` | `eh_inativo` | produto removido não pode sumir de pedidos futuros |
 
 ## 6. Índices
@@ -236,9 +238,8 @@ Chaves primárias e colunas `UNIQUE` já ganham índice automaticamente.
 | produto | `preco` | filtro por faixa de preço e ordenação |
 | produto | `avaliacao_media` | filtro "4 estrelas ou mais" e ordenação |
 | produto | `total_vendidos` | "Mais vendidos" |
-| produto | `unaccent(lower(nome))` com `gin_trgm_ops` | busca por nome |
 | categoria | `id_categoria_pai` | montar o menu e buscar subcategorias |
 | produto_variacao | `id_produto` | carregar as cores do produto |
-| produto_imagem | `(id_produto, ordem)` único | galeria em ordem |
+| produto_imagem | `(id_produto, posicao_galeria)` único | galeria em ordem |
 | produto_especificacao | `id_produto` | página do produto |
 | avaliacao | `(id_produto, criado_em desc)` | avaliações mais recentes primeiro |
