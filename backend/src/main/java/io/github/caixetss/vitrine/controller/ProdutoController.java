@@ -3,6 +3,7 @@ package io.github.caixetss.vitrine.controller;
 import io.github.caixetss.vitrine.dto.FiltrosDisponiveisDto;
 import io.github.caixetss.vitrine.dto.OrdemProduto;
 import io.github.caixetss.vitrine.dto.PaginaDto;
+import io.github.caixetss.vitrine.dto.ProdutoDetalheDto;
 import io.github.caixetss.vitrine.dto.ProdutoFiltro;
 import io.github.caixetss.vitrine.dto.ProdutoResumoDto;
 import io.github.caixetss.vitrine.service.ProdutoService;
@@ -12,9 +13,12 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/produtos")
@@ -35,6 +39,16 @@ public class ProdutoController {
 	@GetMapping("/filtros")
 	public FiltrosDisponiveisDto buscaFiltrosDisponiveis(@Valid ProdutoFiltro filtro) {
 		return produtoService.buscaFiltrosDisponiveis(filtro);
+	}
+
+	@GetMapping("/{slug}")
+	public ProdutoDetalheDto buscaIndividualProduto(@PathVariable String slug) {
+		return produtoService.buscaIndividualProduto(slug);
+	}
+
+	@GetMapping("/{slug}/relacionados")
+	public List<ProdutoResumoDto> buscaListaProdutoRelacionado(@PathVariable String slug) {
+		return produtoService.buscaListaProdutoRelacionado(slug);
 	}
 
 }

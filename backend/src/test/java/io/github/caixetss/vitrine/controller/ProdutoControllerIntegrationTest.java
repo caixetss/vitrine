@@ -12,12 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.everyItem;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -32,8 +36,13 @@ class ProdutoControllerIntegrationTest {
 	@Autowired
 	private MockMvc mockMvc;
 
+	private static final String SLUG_FONE_PULSE = "fone-de-ouvido-bluetooth-sonora-pulse-anc-com-cancelamento-de-ruido";
+
 	@Autowired
 	private EntityManagerFactory entityManagerFactory;
+
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 
 	@Test
 	void semFiltro_devolvePrimeiraPaginaDeTodosOsProdutosAtivos() throws Exception {
@@ -183,6 +192,72 @@ class ProdutoControllerIntegrationTest {
 				.andExpect(jsonPath("$.marcas[?(@.slug == 'vibe')].total").value(contains(3)))
 				.andExpect(jsonPath("$.subcategorias[*].slug").value(contains("fones-de-ouvido")))
 				.andExpect(jsonPath("$.subcategorias[0].total").value(6));
+	}
+
+	@Test
+	void detalhe_devolveProdutoComMarcaCategoriaEColecoes() throws Exception {
+		mockMvc.perform(get("/api/produtos/" + SLUG_FONE_PULSE))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.slug").value(SLUG_FONE_PULSE))
+				.andExpect(jsonPath("$.marca.slug").value("sonora"))
+				.andExpect(jsonPath("$.categoria.slug").value("fones-de-ouvido"))
+				.andExpect(jsonPath("$.categoria.categoriaPai.slug").value("audio"))
+				.andExpect(jsonPath("$.categoria.categoriaPai.categoriaPai").value(nullValue()))
+				.andExpect(jsonPath("$.imagens[*].posicaoGaleria").value(contains(0, 1, 2, 3)))
+				.andExpect(jsonPath("$.especificacoes[*].nome").value(contains("Conexão", "Bateria", "Garantia")))
+				.andExpect(jsonPath("$.variacoes[*].nomeCor").value(hasItem("Preto")));
+	}
+
+	@Test
+	void detalhe_naoFazUmaConsultaPorItemDasColecoes() throws Exception {
+		Statistics estatisticas = entityManagerFactory.unwrap(SessionFactory.class).getStatistics();
+		estatisticas.clear();
+
+		mockMvc.perform(get("/api/produtos/" + SLUG_FONE_PULSE)).andExpect(status().isOk());
+
+		assertThat(estatisticas.getPrepareStatementCount()).isEqualTo(4);
+	}
+
+	@Test
+	void detalhe_slugInexistenteDevolve404() throws Exception {
+		mockMvc.perform(get("/api/produtos/produto-que-nao-existe"))
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	@Transactional
+	void detalhe_produtoInativoDevolve404() throws Exception {
+		jdbcTemplate.update("UPDATE produto SET eh_inativo = true WHERE slug = ?", SLUG_FONE_PULSE);
+
+		mockMvc.perform(get("/api/produtos/" + SLUG_FONE_PULSE))
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	@Transactional
+	void detalhe_naoMostraVariacaoInativa() throws Exception {
+		jdbcTemplate.update("""
+				UPDATE produto_variacao SET eh_inativo = true
+				WHERE nome_cor = 'Preto' AND id_produto = (SELECT id FROM produto WHERE slug = ?)
+				""", SLUG_FONE_PULSE);
+
+		mockMvc.perform(get("/api/produtos/" + SLUG_FONE_PULSE))
+				.andExpect(jsonPath("$.variacoes[*].nomeCor").value(not(hasItem("Preto"))));
+	}
+
+	@Test
+	void relacionados_trazAteCincoDaMesmaCategoriaSemOProprioProduto() throws Exception {
+		mockMvc.perform(get("/api/produtos/" + SLUG_FONE_PULSE + "/relacionados"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$", hasSize(5)))
+				.andExpect(jsonPath("$[*].slug").value(not(hasItem(SLUG_FONE_PULSE))))
+				.andExpect(jsonPath("$[*].imagemCapa", everyItem(startsWith("https://placehold.co/"))));
+	}
+
+	@Test
+	void relacionados_slugInexistenteDevolve404() throws Exception {
+		mockMvc.perform(get("/api/produtos/produto-que-nao-existe/relacionados"))
+				.andExpect(status().isNotFound());
 	}
 
 }

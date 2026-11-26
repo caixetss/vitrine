@@ -14,4 +14,7 @@ public interface ProdutoImagemRepository extends JpaRepository<ProdutoImagem, UU
 	@Query("SELECT i FROM ProdutoImagem i WHERE i.produto.id IN :idsProduto AND i.posicaoGaleria = " + ProdutoImagem.POSICAO_DA_CAPA)
 	List<ProdutoImagem> buscaListaCapaDosProdutos(Collection<UUID> idsProduto);
 
+	@Query("SELECT i FROM ProdutoImagem i WHERE i.produto.id = :idProduto ORDER BY i.posicaoGaleria")
+	List<ProdutoImagem> buscaListaImagemDoProduto(UUID idProduto);
+
 }
