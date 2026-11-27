@@ -26,6 +26,8 @@
     <app-filtros-listagem
       [filtro]="filtro()"
       [filtrosDisponiveis]="filtrosDisponiveis.hasValue() ? filtrosDisponiveis.value() : undefined"
+      [gruposDeCategorias]="gruposDeCategorias()"
+      [categoriaSelecionada]="slug()"
       (aoMudarFiltro)="aoMudarFiltro($event)"
       (aoLimparFiltros)="aoLimparFiltros()" />
     <button mat-flat-button type="button" class="aplicar" (click)="ehFiltrosAbertos.set(false)">Aplicar</button>

@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { RouterLink } from '@angular/router';
-import { FiltroProduto, FiltrosDisponiveis } from '../../../modelos/filtro-produto';
+import { FiltroProduto, FiltrosDisponiveis, GrupoDeCategoria } from '../../../modelos/filtro-produto';
 
 const QUANTIDADE_DE_MARCAS_VISIVEIS = 5;
 
@@ -35,6 +35,8 @@ interface FaixaDePreco {
 export class FiltrosListagem {
   readonly filtro = input.required<FiltroProduto>();
   readonly filtrosDisponiveis = input<FiltrosDisponiveis | undefined>();
+  readonly gruposDeCategorias = input<GrupoDeCategoria[]>([]);
+  readonly categoriaSelecionada = input<string>();
   readonly aoMudarFiltro = output<Partial<FiltroProduto>>();
   readonly aoLimparFiltros = output<void>();
 
@@ -49,6 +51,7 @@ export class FiltrosListagem {
   protected readonly campoPrecoMin = new FormControl<number | null>(null);
   protected readonly campoPrecoMax = new FormControl<number | null>(null);
   protected readonly ehMostrandoTodasAsMarcas = signal(false);
+  protected readonly categoriasExpandidas = signal(new Set<string>());
 
   protected readonly marcasVisiveis = computed(() => {
     const marcas = this.filtrosDisponiveis()?.marcas ?? [];
@@ -60,8 +63,25 @@ export class FiltrosListagem {
 
   constructor() {
     effect(() => {
+      const selecionada = this.categoriaSelecionada();
+      const grupoDaSelecionada = this.gruposDeCategorias().find((grupo) =>
+        grupo.subcategorias.some((subcategoria) => subcategoria.slug === selecionada),
+      );
+      if (grupoDaSelecionada) {
+        this.categoriasExpandidas.update((expandidas) => new Set(expandidas).add(grupoDaSelecionada.slug));
+      }
+    });
+    effect(() => {
       this.campoPrecoMin.setValue(this.filtro().precoMin);
       this.campoPrecoMax.setValue(this.filtro().precoMax);
+    });
+  }
+
+  protected aoAlternarCategoria(slug: string): void {
+    this.categoriasExpandidas.update((expandidas) => {
+      const novas = new Set(expandidas);
+      if (!novas.delete(slug)) novas.add(slug);
+      return novas;
     });
   }
 

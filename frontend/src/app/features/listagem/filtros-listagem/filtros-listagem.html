@@ -3,7 +3,55 @@
   <button mat-button type="button" (click)="aoLimparFiltros.emit()">Limpar tudo</button>
 </div>
 
-@if (filtrosDisponiveis()?.subcategorias?.length) {
+@if (gruposDeCategorias().length) {
+  <section class="grupo">
+    <h3>Categoria</h3>
+    <ul class="lista">
+      @for (grupo of gruposDeCategorias(); track grupo.slug) {
+        <li class="grupo-categoria">
+          <div class="linha-categoria">
+            @if (grupo.subcategorias.length) {
+              <button
+                mat-icon-button
+                type="button"
+                class="expandir"
+                [attr.aria-expanded]="categoriasExpandidas().has(grupo.slug)"
+                [attr.aria-label]="'Subcategorias de ' + grupo.nome"
+                (click)="aoAlternarCategoria(grupo.slug)">
+                <mat-icon [class.girada]="categoriasExpandidas().has(grupo.slug)">chevron_right</mat-icon>
+              </button>
+            }
+            <a
+              class="subcategoria"
+              [class.selecionada]="grupo.slug === categoriaSelecionada()"
+              [attr.aria-current]="grupo.slug === categoriaSelecionada() ? 'page' : null"
+              [routerLink]="['/categoria', grupo.slug]">
+              {{ grupo.nome }}
+              <span class="total">{{ grupo.total }}</span>
+            </a>
+          </div>
+          @if (categoriasExpandidas().has(grupo.slug)) {
+            <ul class="lista filhas">
+              @for (subcategoria of grupo.subcategorias; track subcategoria.slug) {
+                <li>
+                  <a
+                    class="subcategoria"
+                    [class.selecionada]="subcategoria.slug === categoriaSelecionada()"
+                    [attr.aria-current]="subcategoria.slug === categoriaSelecionada() ? 'page' : null"
+                    [routerLink]="['/categoria', subcategoria.slug]">
+                    {{ subcategoria.nome }}
+                    <span class="total">{{ subcategoria.total }}</span>
+                  </a>
+                </li>
+              }
+            </ul>
+          }
+        </li>
+      }
+    </ul>
+  </section>
+  <mat-divider />
+} @else if (filtrosDisponiveis()?.subcategorias?.length) {
   <section class="grupo">
     <h3>Categoria</h3>
     <ul class="lista">

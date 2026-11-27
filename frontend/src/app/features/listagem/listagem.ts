@@ -9,7 +9,7 @@ import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
 import { CategoriaService } from '../../core/api/categoria.service';
 import { ProdutoService } from '../../core/api/produto.service';
 import { Categoria } from '../../modelos/categoria';
-import { FiltroProduto, OrdemProduto } from '../../modelos/filtro-produto';
+import { FiltroProduto, GrupoDeCategoria, OpcaoFiltro, OrdemProduto } from '../../modelos/filtro-produto';
 import { ProdutoCard } from '../../shared/produto-card/produto-card';
 import { ProdutoCardEsqueleto } from '../../shared/produto-card-esqueleto/produto-card-esqueleto';
 import { FiltrosListagem } from './filtros-listagem/filtros-listagem';
@@ -81,6 +81,11 @@ export class Listagem {
   protected readonly filtrosDisponiveis = inject(ProdutoService).buscaFiltrosDisponiveis(() => this.filtro());
 
   protected readonly caminhoDaCategoria = computed(() => encontraCaminhoDaCategoria(this.categorias.hasValue() ? this.categorias.value() : [], this.slug()));
+  private readonly contagemDeTodasAsCategorias = inject(ProdutoService).buscaFiltrosDisponiveis(() => ({ ...this.filtro(), categoria: null }));
+  protected readonly gruposDeCategorias = computed<GrupoDeCategoria[]>(() => {
+    if (!this.contagemDeTodasAsCategorias.hasValue() || !this.categorias.hasValue()) return [];
+    return agrupaPorCategoriaPrincipal(this.categorias.value(), this.contagemDeTodasAsCategorias.value().subcategorias);
+  });
   protected readonly titulo = computed(() => {
     const busca = this.filtro().busca;
     if (busca) return `Resultados para "${busca}"`;
@@ -149,6 +154,18 @@ function descreveFaixaDePreco(minimo: number | null, maximo: number | null): str
   if (minimo === null) return `Até R$ ${maximo}`;
   if (maximo === null) return `Acima de R$ ${minimo}`;
   return `R$ ${minimo} a R$ ${maximo}`;
+}
+
+function agrupaPorCategoriaPrincipal(categorias: Categoria[], opcoes: OpcaoFiltro[]): GrupoDeCategoria[] {
+  const opcoesPorSlug = new Map(opcoes.map((opcao) => [opcao.slug, opcao]));
+  return categorias
+    .map((categoria) => {
+      const subcategorias = categoria.subcategorias.flatMap((subcategoria) => opcoesPorSlug.get(subcategoria.slug) ?? []);
+      const totalDaPropria = opcoesPorSlug.get(categoria.slug)?.total ?? 0;
+      const total = subcategorias.reduce((soma, subcategoria) => soma + subcategoria.total, totalDaPropria);
+      return { slug: categoria.slug, nome: categoria.nome, total, subcategorias };
+    })
+    .filter((grupo) => grupo.total > 0);
 }
 
 function encontraCaminhoDaCategoria(categorias: Categoria[], slug: string | undefined): Categoria[] {

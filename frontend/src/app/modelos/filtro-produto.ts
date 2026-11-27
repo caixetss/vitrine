@@ -23,3 +23,10 @@ export interface FiltrosDisponiveis {
   precoMaximo: number | null;
   totalFreteGratis: number;
 }
+
+export interface GrupoDeCategoria {
+  slug: string;
+  nome: string;
+  total: number;
+  subcategorias: OpcaoFiltro[];
+}

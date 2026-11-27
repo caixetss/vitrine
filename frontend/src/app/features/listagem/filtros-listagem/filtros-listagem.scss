@@ -125,3 +125,37 @@
   color: var(--cor-estrela);
 }
 
+
+.lista .grupo-categoria {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.linha-categoria {
+  display: flex;
+  align-items: center;
+}
+
+.expandir {
+  width: 32px;
+  height: 32px;
+  margin-left: -8px;
+  padding: 4px;
+
+  mat-icon {
+    transition: transform 150ms;
+  }
+
+  .girada {
+    transform: rotate(90deg);
+  }
+}
+
+.filhas {
+  padding-left: 24px;
+}
+
+.subcategoria.selecionada {
+  color: var(--mat-sys-primary);
+  font-weight: 600;
+}
