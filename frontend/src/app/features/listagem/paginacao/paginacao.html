@@ -1,0 +1,31 @@
+<nav class="paginacao" aria-label="Paginação">
+  <button
+    mat-icon-button
+    type="button"
+    aria-label="Página anterior"
+    [disabled]="paginaAtual() === 1"
+    (click)="aoMudarPagina.emit(paginaAtual() - 1)">
+    <mat-icon>chevron_left</mat-icon>
+  </button>
+
+  @for (pagina of paginas(); track $index) {
+    @if (pagina === 'reticencias') {
+      <span class="reticencias" aria-hidden="true">…</span>
+    } @else if (pagina === paginaAtual()) {
+      <button mat-flat-button type="button" class="pagina" aria-current="page">{{ pagina }}</button>
+    } @else {
+      <button mat-button type="button" class="pagina" [attr.aria-label]="'Página ' + pagina" (click)="aoMudarPagina.emit(pagina)">
+        {{ pagina }}
+      </button>
+    }
+  }
+
+  <button
+    mat-icon-button
+    type="button"
+    aria-label="Próxima página"
+    [disabled]="paginaAtual() === totalPaginas()"
+    (click)="aoMudarPagina.emit(paginaAtual() + 1)">
+    <mat-icon>chevron_right</mat-icon>
+  </button>
+</nav>

@@ -1,0 +1,17 @@
+.paginacao {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.pagina {
+  min-width: 40px;
+  padding: 0 8px;
+}
+
+.reticencias {
+  padding: 0 8px;
+  color: var(--mat-sys-on-surface-variant);
+}

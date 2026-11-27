@@ -1,0 +1,94 @@
+<div class="topo">
+  <h2 class="titulo">Filtros</h2>
+  <button mat-button type="button" (click)="aoLimparFiltros.emit()">Limpar tudo</button>
+</div>
+
+@if (filtrosDisponiveis()?.subcategorias?.length) {
+  <section class="grupo">
+    <h3>Categoria</h3>
+    <ul class="lista">
+      @for (subcategoria of filtrosDisponiveis()!.subcategorias; track subcategoria.slug) {
+        <li>
+          <a class="subcategoria" [routerLink]="['/categoria', subcategoria.slug]">
+            {{ subcategoria.nome }}
+            <span class="total">{{ subcategoria.total }}</span>
+          </a>
+        </li>
+      }
+    </ul>
+  </section>
+  <mat-divider />
+}
+
+<section class="grupo">
+  <h3>Preço</h3>
+  <form class="faixa-livre" (submit)="aoAplicarPreco($event)">
+    <label>
+      <span>Mínimo</span>
+      <input type="number" min="0" placeholder="R$ 0" [formControl]="campoPrecoMin" />
+    </label>
+    <span class="separador" aria-hidden="true">–</span>
+    <label>
+      <span>Máximo</span>
+      <input type="number" min="0" placeholder="R$ 0" [formControl]="campoPrecoMax" />
+    </label>
+    <button mat-stroked-button type="submit" class="aplicar-preco" aria-label="Aplicar faixa de preço">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </form>
+  <div class="faixas">
+    @for (faixa of faixasDePreco; track faixa.rotulo) {
+      <button
+        mat-stroked-button
+        type="button"
+        class="faixa"
+        [class.selecionada]="ehFaixaSelecionada(faixa)"
+        [attr.aria-pressed]="ehFaixaSelecionada(faixa)"
+        (click)="aoEscolherFaixa(faixa)">
+        {{ faixa.rotulo }}
+      </button>
+    }
+  </div>
+</section>
+<mat-divider />
+
+<section class="grupo">
+  <h3 id="titulo-avaliacao">Avaliação</h3>
+  <mat-radio-group
+    class="lista"
+    aria-labelledby="titulo-avaliacao"
+    [value]="filtro().avaliacaoMin"
+    (change)="aoMudarFiltro.emit({ avaliacaoMin: $event.value })">
+    @for (nota of notasMinimas; track nota) {
+      <mat-radio-button [value]="nota"><mat-icon class="estrela" aria-hidden="true">star</mat-icon>{{ nota }} ou mais</mat-radio-button>
+    }
+    <mat-radio-button [value]="null">Todas</mat-radio-button>
+  </mat-radio-group>
+</section>
+<mat-divider />
+
+@if (filtrosDisponiveis()?.marcas?.length) {
+  <section class="grupo">
+    <h3>Marca</h3>
+    <ul class="lista">
+      @for (marca of marcasVisiveis(); track marca.slug) {
+        <li>
+          <mat-checkbox [checked]="filtro().marcas.includes(marca.slug)" (change)="aoMarcarMarca(marca.slug, $event.checked)">
+            {{ marca.nome }}
+          </mat-checkbox>
+          <span class="total">{{ marca.total }}</span>
+        </li>
+      }
+    </ul>
+    @if (temMarcasEscondidas()) {
+      <button mat-button type="button" (click)="ehMostrandoTodasAsMarcas.set(true)">Ver todas as marcas</button>
+    }
+  </section>
+  <mat-divider />
+}
+
+<section class="grupo">
+  <mat-slide-toggle [checked]="filtro().freteGratis" (change)="aoMudarFiltro.emit({ freteGratis: $event.checked })">
+    Frete grátis <span class="total">({{ filtrosDisponiveis()?.totalFreteGratis ?? 0 }})</span>
+  </mat-slide-toggle>
+</section>

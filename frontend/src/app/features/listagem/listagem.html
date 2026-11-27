@@ -1,0 +1,109 @@
+<nav class="trilha" aria-label="Você está em">
+  <a routerLink="/">Início</a>
+  @for (categoria of caminhoDaCategoria(); track categoria.id; let ultima = $last) {
+    <span aria-hidden="true">/</span>
+    @if (ultima) {
+      <span aria-current="page">{{ categoria.nome }}</span>
+    } @else {
+      <a [routerLink]="['/categoria', categoria.slug]">{{ categoria.nome }}</a>
+    }
+  }
+  @if (!slug()) {
+    <span aria-hidden="true">/</span>
+    <span aria-current="page">Busca</span>
+  }
+</nav>
+
+<header class="cabecalho">
+  <h1>{{ titulo() }}</h1>
+  @if (produtos.hasValue()) {
+    <span class="total">{{ produtos.value().totalItens }} {{ produtos.value().totalItens === 1 ? 'resultado' : 'resultados' }}</span>
+  }
+</header>
+
+<div class="corpo">
+  <aside class="filtros" [class.aberto]="ehFiltrosAbertos()" aria-label="Filtros">
+    <app-filtros-listagem
+      [filtro]="filtro()"
+      [filtrosDisponiveis]="filtrosDisponiveis.hasValue() ? filtrosDisponiveis.value() : undefined"
+      (aoMudarFiltro)="aoMudarFiltro($event)"
+      (aoLimparFiltros)="aoLimparFiltros()" />
+    <button mat-flat-button type="button" class="aplicar" (click)="ehFiltrosAbertos.set(false)">Aplicar</button>
+  </aside>
+  @if (ehFiltrosAbertos()) {
+    <div class="fundo" aria-hidden="true" (click)="ehFiltrosAbertos.set(false)"></div>
+  }
+
+  <section class="resultados" aria-label="Produtos">
+    <div class="barra">
+      <button mat-stroked-button type="button" class="abrir-filtros" (click)="ehFiltrosAbertos.set(true)">
+        <mat-icon>tune</mat-icon>
+        Filtros
+      </button>
+
+      <mat-chip-set class="ativos" aria-label="Filtros ativos">
+        @for (ativo of filtrosAtivos(); track ativo.rotulo) {
+          <mat-chip (removed)="aoMudarFiltro(ativo.filtroSemEsteItem)">
+            {{ ativo.rotulo }}
+            <button matChipRemove [attr.aria-label]="'Remover filtro ' + ativo.rotulo"><mat-icon>close</mat-icon></button>
+          </mat-chip>
+        }
+        @if (filtrosAtivos().length > 0) {
+          <button mat-button type="button" (click)="aoLimparFiltros()">Limpar filtros</button>
+        }
+      </mat-chip-set>
+
+      <div class="ordenacao">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-ordem">
+          <mat-label>Ordenar por</mat-label>
+          <mat-select [value]="ordem()" (selectionChange)="aoMudarOrdem($event.value)">
+            @for (opcao of opcoesDeOrdem; track opcao.valor) {
+              <mat-option [value]="opcao.valor">{{ opcao.rotulo }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-button-toggle-group
+          hideSingleSelectionIndicator
+          aria-label="Modo de exibição"
+          [value]="modoDeExibicao()"
+          (change)="modoDeExibicao.set($event.value)">
+          <mat-button-toggle value="grade" aria-label="Grade"><mat-icon>grid_view</mat-icon></mat-button-toggle>
+          <mat-button-toggle value="lista" aria-label="Lista"><mat-icon>view_list</mat-icon></mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+    </div>
+
+    @if (produtos.error()) {
+      <div class="aviso">
+        <mat-icon class="icone" aria-hidden="true">cloud_off</mat-icon>
+        <h2>Não foi possível carregar os produtos</h2>
+        <p>Verifique sua conexão e tente de novo.</p>
+        <button mat-flat-button type="button" (click)="produtos.reload()">Tentar novamente</button>
+      </div>
+    } @else if (produtos.isLoading()) {
+      <div class="grade" [class.lista]="modoDeExibicao() === 'lista'">
+        @for (esqueleto of esqueletos; track esqueleto) {
+          <app-produto-card-esqueleto />
+        }
+      </div>
+    } @else if (produtos.value()?.totalItens === 0) {
+      <div class="aviso">
+        <mat-icon class="icone" aria-hidden="true">search_off</mat-icon>
+        <h2>Nenhum produto encontrado</h2>
+        <p>Tente remover alguns filtros ou buscar por outro termo.</p>
+        <button mat-flat-button type="button" (click)="aoLimparFiltros()">Limpar filtros</button>
+      </div>
+    } @else if (produtos.hasValue()) {
+      <div class="grade" [class.lista]="modoDeExibicao() === 'lista'">
+        @for (produto of produtos.value().itens; track produto.id) {
+          <app-produto-card [produto]="produto" [ehHorizontal]="modoDeExibicao() === 'lista'" />
+        }
+      </div>
+
+      @if (produtos.value().totalPaginas > 1) {
+        <app-paginacao [paginaAtual]="pagina()" [totalPaginas]="produtos.value().totalPaginas" (aoMudarPagina)="aoMudarPagina($event)" />
+      }
+    }
+  </section>
+</div>

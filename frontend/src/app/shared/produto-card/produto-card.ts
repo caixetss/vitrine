@@ -13,7 +13,9 @@ import { SeloDesconto } from '../selo-desconto/selo-desconto';
   imports: [RouterLink, MatButtonModule, MatCardModule, MatIconModule, AvaliacaoEstrelas, Preco, SeloDesconto],
   templateUrl: './produto-card.html',
   styleUrl: './produto-card.scss',
+  host: { '[class.horizontal]': 'ehHorizontal()' },
 })
 export class ProdutoCard {
   readonly produto = input.required<ProdutoResumo>();
+  readonly ehHorizontal = input(false);
 }

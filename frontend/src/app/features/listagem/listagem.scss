@@ -1,0 +1,147 @@
+.trilha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-on-surface-variant);
+
+  a {
+    color: inherit;
+  }
+
+  [aria-current] {
+    color: var(--mat-sys-on-surface);
+  }
+}
+
+.cabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 12px;
+  margin: 12px 0 24px;
+
+  h1 {
+    margin: 0;
+    font: var(--mat-sys-headline-medium);
+    font-weight: 700;
+  }
+}
+
+.total {
+  font: var(--mat-sys-body-medium);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.corpo {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  align-items: start;
+  gap: 32px;
+}
+
+.aplicar,
+.abrir-filtros,
+.fundo {
+  display: none;
+}
+
+.barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.ativos {
+  flex: 1;
+}
+
+.ordenacao {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.campo-ordem {
+  width: 200px;
+}
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+
+  &.lista {
+    grid-template-columns: 1fr;
+  }
+}
+
+.aviso {
+  padding: 48px 16px;
+  text-align: center;
+  color: var(--mat-sys-on-surface-variant);
+
+  h2 {
+    color: var(--mat-sys-on-surface);
+    font: var(--mat-sys-title-large);
+  }
+}
+
+.icone {
+  width: 48px;
+  height: 48px;
+  font-size: 48px;
+  color: var(--mat-sys-primary);
+}
+
+@media (max-width: 959px) {
+  .corpo {
+    grid-template-columns: 1fr;
+  }
+
+  .filtros {
+    display: none;
+
+    &.aberto {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      width: min(320px, 85vw);
+      padding: 16px;
+      box-sizing: border-box;
+      overflow-y: auto;
+      background-color: var(--mat-sys-surface);
+      box-shadow: var(--mat-sys-level3);
+    }
+  }
+
+  .aberto .aplicar {
+    display: block;
+    margin-top: auto;
+  }
+
+  .fundo {
+    position: fixed;
+    inset: 0;
+    z-index: 9;
+    display: block;
+    background-color: rgb(0 0 0 / 40%);
+  }
+
+  .abrir-filtros {
+    display: inline-flex;
+  }
+
+  .ordenacao {
+    width: 100%;
+  }
+
+  .campo-ordem {
+    flex: 1;
+  }
+}
