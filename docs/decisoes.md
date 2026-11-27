@@ -30,7 +30,7 @@ io.github.caixetss.vitrine
 └── excecao/       RecursoNaoEncontradoException, TratadorGlobalExcecoes
 ```
 
-Os testes ficam no mesmo pacote da classe testada (`service/CategoriaServiceTest`, `controller/CategoriaControllerIntegrationTest`).
+Os testes ficam em `_unit/` e `_integration/` (ver seção Testes).
 
 ### Camadas
 
@@ -55,12 +55,20 @@ Fluxo de dependência só para baixo: `Controller → Service → Repository`. U
 
 ### Testes
 
-| Tipo | Ferramenta | Testa |
-|---|---|---|
-| Unidade | JUnit 5, Mockito, AssertJ | regras do service |
-| Integração | `@SpringBootTest` + Testcontainers (PostgreSQL) | endpoint de ponta a ponta, com as migrations reais |
+| Tipo | Pacote e nome | Ferramenta | Testa |
+|---|---|---|---|
+| Unidade | `_unit/<camada>/<Classe>Test` | JUnit 5, Mockito, AssertJ | regra isolada de uma classe |
+| Integração | `_integration/<Assunto>Test` | `AbstractMvcIntegrationTest` + Testcontainers (PostgreSQL) | a rota inteira, com as migrations reais |
 
-Testcontainers em vez de H2: os testes rodam no mesmo PostgreSQL de produção, com os mesmos `CHECK` e tipos.
+Padrão (o mesmo do GBSys):
+
+- **Gavetas `@Nested`:** no unitário, uma por método público; na integração, uma por rota (`"GET /api/produtos"`) com `Payload` (parâmetros inválidos) e `Service` (regra e resultado) dentro. `SpringSecurity` entra quando houver rotas protegidas (#22). Gaveta vazia não se cria.
+- **Nomes:** `@DisplayName` com a frase em português e método igual em camelCase (`deve...`, `naoDeve...`). Ordem dos cenários: entrada inválida → não encontrado → regra → sucesso por último.
+- **Sem `@InjectMocks`:** a classe testada é criada à mão no `@BeforeEach`, para o teste não compilar se o construtor mudar.
+- **Dados próprios:** cada teste cria o que precisa pelos helpers (`_unit/helpers` estáticos; `_integration/helpers` como beans que salvam no banco), com Faker. Nenhum teste depende dos dados de exemplo da V3.
+- **Rota escrita na própria chamada** (`get("/api/produtos")`), sem constante.
+
+Testcontainers em vez de H2: os testes rodam no mesmo PostgreSQL de produção.
 
 ## 3. Frontend
 

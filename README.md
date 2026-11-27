@@ -76,7 +76,7 @@ vitrine/
 └── frontend/    Aplicação Angular
 ```
 
-Documentação: [histórias de usuário](docs/historias-de-usuario.md), [modelo de dados](docs/modelo-dados.md), [contrato da API](docs/api.md) e [arquitetura e decisões](docs/decisoes.md).
+Documentação: [histórias de usuário](docs/historias-de-usuario.md), [modelo de dados](docs/modelo-dados.md), [contrato da API](docs/api.md), [arquitetura e decisões](docs/decisoes.md) e [testes](docs/testes.md).
 
 ## Execução local
 
@@ -138,9 +138,11 @@ A aplicação fica disponível em `http://localhost:4200`.
 ## Testes
 
 ```bash
-cd backend && mvn test
+cd backend && mvn verify
 cd frontend && npm test
 ```
+
+Os testes do backend precisam do Docker aberto. Como eles são organizados e como escrever um novo: [docs/testes.md](docs/testes.md).
 
 ## Roadmap
 
