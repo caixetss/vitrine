@@ -1,6 +1,8 @@
 # Modelo de dados
 
-Modelo do MVP (catálogo, produto e carrinho). O carrinho fica no navegador e não tem tabela. Base: [histórias de usuário](historias-de-usuario.md).
+Como os dados da loja ficam guardados no banco. O caminho foi: ler as telas, listar as "coisas" que aparecem nelas, transformar cada uma em tabela e registrar o motivo de cada escolha.
+
+Cobre o MVP (catálogo, produto e avaliações). O carrinho fica no navegador e não tem tabela. Base: [histórias de usuário](historias-de-usuario.md).
 
 ## 1. Substantivos das telas
 
@@ -20,7 +22,7 @@ Calculados na tela, sem coluna: desconto (%), parcela (preço / 10), valor no Pi
 
 Todas as tabelas ficam no schema `public`, usam `uuid` como chave primária e têm as colunas de auditoria `criado_em` e `atualizado_em`.
 
-A coluna **Regra** descreve validações de negócio. Elas são feitas no código Java (decisão D11); o banco garante só tipo, obrigatoriedade, chaves e unicidade.
+A coluna **Regra** descreve validações de negócio. Elas são feitas no código Java (decisão D9 em [decisoes.md](decisoes.md)); o banco garante só tipo, obrigatoriedade, chaves e unicidade.
 
 ### categoria
 

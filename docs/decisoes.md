@@ -1,124 +1,106 @@
 # Arquitetura e decisões
 
-Arquitetura do MVP: simples, em camadas, sem abstração que o projeto ainda não precisa. Cada decisão abaixo diz o contexto, o que foi escolhido, o que ficou de fora e o custo.
+Como o código está organizado e **por que** cada escolha foi feita. A regra geral: arquitetura simples, em camadas, sem abstração que o projeto ainda não precisa.
 
 ## 1. Visão geral
 
 ```
-Navegador (Angular)  --HTTP/JSON-->  API (Spring Boot)  --JPA-->  PostgreSQL (Neon)
+Navegador (Angular)  ──HTTP/JSON──►  API (Spring Boot)  ──JPA──►  PostgreSQL
+                                                                  (Docker em dev, Neon em produção)
 ```
 
-- O front só fala com a API, nunca com o banco.
-- A API é stateless e somente leitura no MVP. O carrinho fica no `localStorage`.
-- O contrato entre os dois é o [docs/api.md](api.md).
+- O front só conversa com a API, nunca com o banco.
+- No MVP a API é **somente leitura** e não guarda sessão. O carrinho fica no navegador (`localStorage`).
+- O que a API recebe e devolve está combinado em [api.md](api.md).
 
 ## 2. Backend
 
-### Pacotes
-
-Pacote base `io.github.caixetss.vitrine`, organizado por camada:
+### Pastas
 
 ```
 io.github.caixetss.vitrine
 ├── VitrineApiApplication.java
-├── config/        CorsConfig, ConversorOrdemProduto
-├── controller/    CategoriaController, ProdutoController, ...
-├── service/       CategoriaService, ProdutoService, ...
-├── repository/    CategoriaRepository, ProdutoRepository, ProdutoSpecifications, ...
-├── entidade/      Categoria, Marca, Produto, ProdutoVariacao, ProdutoImagem, ...
-├── dto/           CategoriaDto, ProdutoResumoDto, ProdutoDetalheDto, PaginaDto, ErroDto, ...
-└── excecao/       RecursoNaoEncontradoException, TratadorGlobalExcecoes
+├── config/        CORS, Swagger, conversor da ordenação
+├── controller/    recebe as requisições
+├── service/       regras de negócio
+├── repository/    consultas ao banco
+├── entidade/      classes que espelham as tabelas
+├── dto/           formatos de entrada e saída da API
+└── excecao/       exceções e tratamento global de erros
 ```
-
-Os testes ficam em `_unit/` e `_integration/` (ver seção Testes).
 
 ### Camadas
 
+Uma requisição passa sempre pelo mesmo caminho, e cada camada tem uma responsabilidade só:
+
+```
+requisição → Controller → Service → Repository → banco
+```
+
 | Camada | Faz | Não faz |
 |---|---|---|
-| Controller | recebe a requisição, valida parâmetros (`@Valid`), chama o service, devolve DTO | regra de negócio, acesso ao banco |
-| Service | regra de negócio, monta o DTO | conhecer HTTP (status, headers) |
-| Repository | consulta ao banco (Spring Data, Specifications) | regra de negócio |
-| Entidade | espelha a tabela | sair da API (nunca vai no JSON) |
-| DTO | formato da resposta, `record` imutável | lógica |
+| Controller | recebe a requisição, valida os parâmetros, chama o service | regra de negócio, acesso ao banco |
+| Service | aplica a regra de negócio e monta a resposta (DTO) | saber de HTTP (status, headers) |
+| Repository | consulta o banco | regra de negócio |
+| Entidade | espelha uma tabela | sair da API: nunca vai no JSON |
+| DTO | define o formato da resposta (`record` imutável) | lógica |
 
-Fluxo de dependência só para baixo: `Controller → Service → Repository`. Um service pode chamar o service de outra funcionalidade, nunca o repository dela.
+Um service pode chamar o service de outro assunto, mas nunca o repository dele.
 
 ### Regras de código
 
-- Entidades: `@NoArgsConstructor(access = PROTECTED)`, `@Getter`; sem `@Setter` público (a API é somente leitura). Relacionamentos `@ManyToOne(fetch = LAZY)`.
-- Injeção por construtor com `@RequiredArgsConstructor` e campos `private final`.
-- `@Transactional(readOnly = true)` nos métodos de leitura do service. Com `open-in-view=false`, o DTO precisa ser montado dentro da transação.
-- Erros viram exceção (`RecursoNaoEncontradoException`) e o `TratadorGlobalExcecoes` (`@RestControllerAdvice`) transforma em `ErroDto`. Sem `try/catch` no controller.
-- Nomes de métodos: `buscaLista...`, `buscaIndividual...`, `adicionar...`, `editar...`, `deletar...`, `eh...` (booleano).
-- Código, classes e variáveis em português; palavras-chave do framework em inglês.
+- **Nomes em português**, que dizem o que fazem: `buscaListaProduto`, `buscaIndividualProduto`, `contaProdutosPorMarca`. Palavras do framework continuam em inglês (`Controller`, `Service`, `@Query`).
+- **Sem comentários no código:** se precisa de comentário, o nome está ruim. Comentário só para o "porquê" que o código não mostra.
+- **Entidades só para leitura:** sem `setter`; relacionamentos carregados só quando usados (`LAZY`).
+- **Injeção pelo construtor** (`@RequiredArgsConstructor`, campos `private final`).
+- **Erros viram exceção** e o `TratadorGlobalExcecoes` transforma todas no mesmo formato (`ErroDto`). Nenhum `try/catch` no controller.
 
 ### Testes
 
-| Tipo | Pacote e nome | Ferramenta | Testa |
-|---|---|---|---|
-| Unidade | `_unit/<camada>/<Classe>Test` | JUnit 5, Mockito, AssertJ | regra isolada de uma classe |
-| Integração | `_integration/<Assunto>Test` | `AbstractMvcIntegrationTest` + Testcontainers (PostgreSQL) | a rota inteira, com as migrations reais |
+Unitários em `_unit/`, de integração em `_integration/`, com gavetas por rota e dados criados pelo próprio teste. Explicado em [testes.md](testes.md).
 
-Padrão (o mesmo do GBSys):
-
-- **Gavetas `@Nested`:** no unitário, uma por método público; na integração, uma por rota (`"GET /api/produtos"`) com `Payload` (parâmetros inválidos) e `Service` (regra e resultado) dentro. `SpringSecurity` entra quando houver rotas protegidas (#22). Gaveta vazia não se cria.
-- **Nomes:** `@DisplayName` com a frase em português e método igual em camelCase (`deve...`, `naoDeve...`). Ordem dos cenários: entrada inválida → não encontrado → regra → sucesso por último.
-- **Sem `@InjectMocks`:** a classe testada é criada à mão no `@BeforeEach`, para o teste não compilar se o construtor mudar.
-- **Dados próprios:** cada teste cria o que precisa pelos helpers (`_unit/helpers` estáticos; `_integration/helpers` como beans que salvam no banco), com Faker. Nenhum teste depende dos dados de exemplo da V3.
-- **Rota escrita na própria chamada** (`get("/api/produtos")`), sem constante.
-
-Testcontainers em vez de H2: os testes rodam no mesmo PostgreSQL de produção.
-
-## 3. Frontend
+## 3. Frontend (em desenvolvimento)
 
 ```
 src/app/
-├── core/                  serviços únicos e configuração
-│   ├── api/               categoria.service.ts, produto.service.ts
-│   ├── carrinho/          carrinho.store.ts
-│   └── interceptors/      erro.interceptor.ts
-├── shared/                componentes de exibição reutilizáveis
-│   ├── card-produto/
-│   ├── avaliacao-estrelas/
-│   ├── preco/
-│   └── estado-vazio/
-├── features/              uma pasta por página (carregada sob demanda)
-│   ├── home/
-│   ├── listagem/
-│   └── produto/
-├── layout/                cabeçalho, rodapé, gaveta do carrinho
-└── modelos/               interfaces TypeScript iguais aos DTOs da API
+├── core/       serviços únicos: chamadas à API, carrinho, interceptors
+├── shared/     componentes reutilizáveis: card de produto, estrelas, preço
+├── features/   uma pasta por página: home, listagem, produto
+├── layout/     cabeçalho, rodapé, gaveta do carrinho
+└── modelos/    interfaces TypeScript iguais aos DTOs da API
 ```
 
-- Componentes standalone; rotas das `features/` com `loadComponent` (lazy).
-- **Página** (em `features/`): busca dados e guarda estado. **Exibição** (em `shared/`): só recebe `input()` e emite `output()`, sem chamar serviço.
-- Estado com Signals. Dados da API com `HttpClient` tipado pelas interfaces de `modelos/`.
-- Filtros, ordenação e página ficam na URL (query params), que é a fonte da verdade da listagem.
-- URL da API em `environments/environment.ts`.
-- Estilo: SCSS por componente; cores, espaçamentos e fontes como variáveis CSS em `styles.scss`.
+- **Componentes de página** (`features/`) buscam dados. **Componentes de exibição** (`shared/`) só recebem dados e avisam eventos.
+- Estado com **Signals**, que já vêm no Angular.
+- Filtros, ordenação e página ficam na **URL**: dá para compartilhar o link e voltar no navegador sem perder a busca.
+- Cada página só é carregada quando o usuário entra nela (lazy loading).
 
 ## 4. Git
 
-- Branch por issue a partir da `main`: `feat/9-endpoint-categorias`, `fix/...`, `docs/...`.
+- Uma branch e um pull request por issue, com `closes #N`.
 - Commits no padrão Conventional Commits: `feat:`, `fix:`, `docs:`, `test:`, `refactor:`, `chore:`.
-- Um pull request por issue, com `closes #N` na descrição.
-- `main` protegida: merge só por PR com CI verde (configurado na #7).
+- O CI roda build e testes a cada push.
 
 ## 5. Registro de decisões
 
-| # | Decisão | Alternativas | Motivo | Custo |
-|---|---|---|---|---|
-| D1 | Monólito em camadas (controller, service, repository) | hexagonal, microsserviços | o MVP é um CRUD de leitura; mais camadas seriam código sem uso | se surgir integração externa (pagamento), pode pedir uma camada de porta/adaptador |
-| D2 | Pacote por camada (`controller/`, `service/`, `repository/`, `entidade/`, `dto/`) | pacote por funcionalidade (`categoria/`, `produto/`) | padrão mais conhecido; com poucas funcionalidades, cada pasta continua pequena | mudar uma funcionalidade mexe em várias pastas; se o projeto crescer muito, reavaliar a divisão por funcionalidade |
-| D3 | Pacote base `io.github.caixetss.vitrine` | `vitrine` | segue o `groupId` do `pom.xml` e alinha com o pacote dos testes | nenhum |
-| D4 | Conversão entidade → DTO com construtor extra no record (`new ProdutoResumoDto(produto)`) | MapStruct, método estático (`de`, `from`) | poucos DTOs; evita dependência; o `new` já diz o que acontece, sem nome para inventar | se os DTOs crescerem muito, reavaliar MapStruct |
-| D5 | DTOs como `record` | classes com Lombok | imutáveis e sem boilerplate, nativo do Java 21 | nenhum |
-| D6 | Filtros dinâmicos com Specifications | `@Query` com vários `IS NULL OR` | combina só os filtros enviados e mantém a consulta legível | a busca sem acento usa a função `translate` do PostgreSQL via `criteriaBuilder.function` |
-| D7 | Testes de integração com Testcontainers | H2 | banco igual ao de produção | precisa do Docker rodando |
-| D8 | Estado no front com Signals | NgRx, só RxJS | o estado é pequeno (carrinho e filtros); Signals já vem no Angular | se o estado global crescer, reavaliar |
-| D9 | Carrinho no `localStorage` | tabela no banco | o MVP não tem login | ao criar login, migrar o carrinho para a API |
-| D10 | Sem paginação em `/categorias` | paginar | a lista tem poucas dezenas de itens | nenhum |
-| D11 | Regras de negócio e validações (preço > 0, nota de 1 a 5, estoque >= 0, formato da cor) ficam no Java, com Bean Validation e no service | `CHECK` no banco | a regra fica num lugar só, testável e com mensagem de erro clara | o banco aceita valor inválido se alguém gravar direto por SQL. O banco guarda só a estrutura: tipo, `NOT NULL`, chaves, `UNIQUE` e valores padrão |
+Cada linha é uma escolha: o que foi decidido, o que ficou de fora, por quê, e o custo de ter escolhido assim.
 
-Ao tomar uma decisão nova, adicionar uma linha nesta tabela.
+| # | Decisão | Alternativa descartada | Por quê | Custo |
+|---|---|---|---|---|
+| D1 | Monólito em camadas | microsserviços, arquitetura hexagonal | o MVP é uma API de leitura; mais camadas seriam código sem uso | se entrar integração externa (pagamento), essa parte pode pedir uma camada de isolamento |
+| D2 | Pastas por camada (`controller/`, `service/`...) | pastas por assunto (`produto/`, `categoria/`) | padrão mais conhecido; com poucos assuntos, cada pasta continua pequena | mudar um assunto mexe em várias pastas; reavaliar se o projeto crescer muito |
+| D3 | DTOs como `record`, convertidos por um construtor (`new ProdutoResumoDto(produto)`) | MapStruct, métodos `de`/`from` | poucos DTOs, sem dependência extra; o `new` já diz o que acontece | se os DTOs crescerem muito, reavaliar MapStruct |
+| D4 | Consultas com `@Query` e nome em português (`buscaListaCategoriaAtiva`) | nomes que o Spring interpreta (`findByEhInativoFalseOrderBy...`) | o nome fica curto e diz a intenção; a consulta fica visível na anotação | escrever a consulta à mão |
+| D5 | Filtros dinâmicos com `Specification` | uma consulta com vários `IS NULL OR` | cada filtro é uma peça; entram só os que o cliente escolheu; a mesma montagem serve para a lista e para as contagens | a API de critérios do JPA é mais verbosa que SQL |
+| D6 | Ordenação também como `Specification` | `Sort` do Spring | o `Sort` não ordena por conta (percentual de desconto) | a ordenação fica fora do `Pageable` |
+| D7 | Evitar N+1: capas buscadas de uma vez; cada coleção do produto numa consulta | deixar o Hibernate carregar item por item | sem isso, uma página de 20 produtos faria mais de 20 consultas | testes conferem o número de consultas |
+| D8 | Busca sem acento com `translate` (nativo do PostgreSQL) | extensões `unaccent` e `pg_trgm` | não precisa instalar nada no banco; o catálogo é pequeno | sem índice de texto: com milhões de produtos, reavaliar |
+| D9 | Regras e validações no Java (Bean Validation e service) | `CHECK` no banco | a regra fica num lugar só, testável, com mensagem clara | o banco aceita valor inválido se alguém gravar direto por SQL; ele guarda só a estrutura (tipos, chaves, `NOT NULL`, `UNIQUE`) |
+| D10 | Erros sempre no formato `ErroDto` | o formato padrão do Spring | o front trata todo erro do mesmo jeito; mensagens em português; nada interno vaza no 500 | um tratador a mais para manter |
+| D11 | Swagger desligado por padrão, ligado no perfil `dev` | ligado sempre | esquecer uma configuração no deploy não expõe a documentação | precisa do perfil `dev` (ou `SWAGGER_ATIVO=true`) para ver |
+| D12 | Testes de integração com PostgreSQL no Docker (Testcontainers) | banco em memória (H2) | testa no mesmo banco de produção, com as migrations reais | precisa do Docker aberto |
+| D13 | Estado do front com Signals | NgRx | o estado é pequeno (carrinho e filtros) | se crescer muito, reavaliar |
+| D14 | Carrinho no `localStorage` | tabela no banco | o MVP não tem login | com login (#22), migrar o carrinho para a API |
+| D15 | `/categorias` sem paginação | paginar | são poucas dezenas de itens | nenhum |
+
+Ao tomar uma decisão nova, acrescente uma linha.

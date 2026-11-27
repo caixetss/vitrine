@@ -1,6 +1,8 @@
 # Histórias de usuário do MVP
 
-Cada história descreve uma funcionalidade do ponto de vista do cliente e lista os critérios que precisam ser verdadeiros para ela ser considerada pronta. A coluna **Issues** indica onde a história é implementada.
+O ponto de partida do projeto: o que o cliente precisa conseguir fazer na loja. Cada história descreve uma funcionalidade do ponto de vista dele e lista os critérios que precisam ser verdadeiros para ela estar pronta.
+
+A coluna **Issues** liga cada história às tarefas do GitHub onde ela é implementada.
 
 ## Resumo
 

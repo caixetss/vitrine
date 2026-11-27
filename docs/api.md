@@ -1,6 +1,8 @@
 # Contrato da API
 
-Endpoints do MVP. Todos são `GET`, públicos e somente leitura. Base: [histórias de usuário](historias-de-usuario.md) e [modelo de dados](modelo-dados.md).
+O que a API recebe e devolve, endpoint por endpoint. Foi escrito **antes do código**, como um acordo entre front e back, a partir das [histórias de usuário](historias-de-usuario.md) e do [modelo de dados](modelo-dados.md).
+
+No MVP todos os endpoints são `GET`, públicos e somente leitura. Para testar ao vivo, use o Swagger (`/swagger-ui.html`, com o backend no perfil `dev`).
 
 ## 1. Convenções
 
@@ -214,4 +216,4 @@ Paginado (padrão `tamanho=5`), mais recentes primeiro.
 | Slug ou id na URL? | slug | URL legível e boa para SEO; o id continua no JSON para o carrinho |
 | Endpoint separado para filtros? | sim | a listagem fica simples e as contagens podem ser carregadas em paralelo |
 | Avaliações dentro do produto? | não, endpoint próprio | são paginadas e podem ser muitas |
-| Swagger/OpenAPI | `springdoc-openapi` em `/swagger-ui.html` | gera a documentação a partir do código; este arquivo fica como o contrato de referência |
+| Swagger/OpenAPI | `springdoc-openapi` em `/swagger-ui.html`, só no perfil `dev` | gera a documentação a partir do código; este arquivo continua como o contrato de referência |

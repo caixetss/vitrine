@@ -1,5 +1,7 @@
 # Testes do backend
 
+Como os testes estão organizados, como ler um teste e como escrever um novo. São 58 testes, que rodam a cada push no GitHub Actions.
+
 ## Como rodar
 
 O Docker precisa estar aberto. Dentro de `backend`:
