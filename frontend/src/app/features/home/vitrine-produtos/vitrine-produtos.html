@@ -9,7 +9,7 @@
 } @else {
   <div class="grade">
     @if (ehCarregando()) {
-      @for (esqueleto of esqueletos; track esqueleto) {
+      @for (esqueleto of posicoesDosEsqueletos; track esqueleto) {
         <app-produto-card-esqueleto />
       }
     } @else {

@@ -54,7 +54,7 @@ export class Listagem {
     { valor: 'avaliacao', rotulo: 'Melhor avaliados' },
     { valor: 'maior-desconto', rotulo: 'Maior desconto' },
   ];
-  protected readonly esqueletos = Array.from({ length: QUANTIDADE_DE_ESQUELETOS }, (_, indice) => indice);
+  protected readonly posicoesDosEsqueletos = Array.from({ length: QUANTIDADE_DE_ESQUELETOS }, (_, indice) => indice);
   protected readonly modoDeExibicao = signal<'grade' | 'lista'>('grade');
   protected readonly ehFiltrosAbertos = signal(false);
 

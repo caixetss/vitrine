@@ -30,13 +30,13 @@ export class Home {
     { icone: 'autorenew', titulo: 'Troca grátis em 7 dias', texto: 'Devolução simples e sem custo' },
   ];
 
-  private readonly agora = signal(new Date());
-  protected readonly tempoAteFimDasOfertas = computed(() => formataTempoAteFimDoDia(this.agora()));
+  private readonly horarioAtual = signal(new Date());
+  protected readonly tempoAteFimDasOfertas = computed(() => formataTempoAteFimDoDia(this.horarioAtual()));
   protected readonly ehEmailInscrito = signal(false);
 
   constructor() {
-    const relogio = setInterval(() => this.agora.set(new Date()), 1000);
-    inject(DestroyRef).onDestroy(() => clearInterval(relogio));
+    const intervaloDoRelogio = setInterval(() => this.horarioAtual.set(new Date()), 1000);
+    inject(DestroyRef).onDestroy(() => clearInterval(intervaloDoRelogio));
   }
 
   protected aoInscreverNaNewsletter(evento: SubmitEvent): void {

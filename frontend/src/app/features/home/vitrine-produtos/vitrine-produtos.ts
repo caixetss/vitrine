@@ -20,5 +20,5 @@ export class VitrineProdutos {
   readonly ehCarregando = input(false);
   readonly temErro = input(false);
 
-  protected readonly esqueletos = Array.from({ length: QUANTIDADE_DE_ESQUELETOS }, (_, indice) => indice);
+  protected readonly posicoesDosEsqueletos = Array.from({ length: QUANTIDADE_DE_ESQUELETOS }, (_, indice) => indice);
 }

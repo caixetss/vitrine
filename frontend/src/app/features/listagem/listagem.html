@@ -85,7 +85,7 @@
       </div>
     } @else if (produtos.isLoading()) {
       <div class="grade" [class.lista]="modoDeExibicao() === 'lista'">
-        @for (esqueleto of esqueletos; track esqueleto) {
+        @for (esqueleto of posicoesDosEsqueletos; track esqueleto) {
           <app-produto-card-esqueleto />
         }
       </div>

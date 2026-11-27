@@ -48,14 +48,14 @@ export class Destaques {
     },
   ];
 
-  protected readonly indiceDoSlide = signal(0);
+  protected readonly indiceDoSlideAtual = signal(0);
 
   constructor() {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const trocaDeSlide = setInterval(
-      () => this.indiceDoSlide.update((indice) => (indice + 1) % this.slides.length),
+    const intervaloDaTrocaDeSlide = setInterval(
+      () => this.indiceDoSlideAtual.update((indice) => (indice + 1) % this.slides.length),
       MILISSEGUNDOS_POR_SLIDE,
     );
-    inject(DestroyRef).onDestroy(() => clearInterval(trocaDeSlide));
+    inject(DestroyRef).onDestroy(() => clearInterval(intervaloDaTrocaDeSlide));
   }
 }
