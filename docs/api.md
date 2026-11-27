@@ -214,4 +214,4 @@ Paginado (padrão `tamanho=5`), mais recentes primeiro.
 | Slug ou id na URL? | slug | URL legível e boa para SEO; o id continua no JSON para o carrinho |
 | Endpoint separado para filtros? | sim | a listagem fica simples e as contagens podem ser carregadas em paralelo |
 | Avaliações dentro do produto? | não, endpoint próprio | são paginadas e podem ser muitas |
-| Swagger/OpenAPI | adicionar `springdoc-openapi` na #9 | gera a documentação a partir do código; este arquivo fica como o contrato de referência |
+| Swagger/OpenAPI | `springdoc-openapi` em `/swagger-ui.html` | gera a documentação a partir do código; este arquivo fica como o contrato de referência |

@@ -110,8 +110,20 @@ O perfil `dev` já aponta para o banco do Docker e mostra o SQL no log. Para usa
 | `DB_USER` | Usuário do banco |
 | `DB_PASSWORD` | Senha do banco |
 | `CORS_ORIGENS_PERMITIDAS` | Origens liberadas para o front, separadas por vírgula. Padrão: `http://localhost:4200` |
+| `SWAGGER_ATIVO` | `true` liga a documentação (Swagger). Padrão: desligada; o perfil `dev` liga sozinho |
 
 As migrations do Flyway são aplicadas na inicialização e o Hibernate apenas valida o schema. A API fica disponível em `http://localhost:8080`.
+
+### Documentação da API (Swagger)
+
+Com o backend rodando, abra no navegador:
+
+| O quê | Endereço |
+|---|---|
+| Tela interativa para testar os endpoints | http://localhost:8080/swagger-ui.html |
+| Contrato OpenAPI em JSON | http://localhost:8080/v3/api-docs |
+
+Na tela, escolha um endpoint e clique em **Execute**: os campos já vêm com exemplos preenchidos. O contrato completo, com as regras de cada endpoint, está em [docs/api.md](docs/api.md).
 
 ### Frontend
 
