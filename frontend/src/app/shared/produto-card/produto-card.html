@@ -1,0 +1,25 @@
+<mat-card appearance="outlined" class="card">
+  <a class="link" [routerLink]="['/produto', produto().slug]">
+    <div class="capa">
+      @if (produto().imagemCapa; as imagem) {
+        <img [src]="imagem" [alt]="produto().nome" loading="lazy" width="800" height="800" />
+      } @else {
+        <mat-icon class="sem-imagem" aria-hidden="true">image</mat-icon>
+      }
+    </div>
+
+    <div class="informacoes">
+      <h3 class="nome">{{ produto().nome }}</h3>
+      <app-avaliacao-estrelas [nota]="produto().avaliacaoMedia" [total]="produto().totalAvaliacoes" />
+      <app-preco [preco]="produto().preco" [precoOriginal]="produto().precoOriginal" />
+      @if (produto().ehFreteGratis) {
+        <span class="frete-gratis"><mat-icon aria-hidden="true">local_shipping</mat-icon>Frete grátis</span>
+      }
+    </div>
+  </a>
+
+  <app-selo-desconto class="selo" [preco]="produto().preco" [precoOriginal]="produto().precoOriginal" />
+  <button mat-icon-button type="button" class="favorito" [attr.aria-label]="'Favoritar ' + produto().nome">
+    <mat-icon>favorite</mat-icon>
+  </button>
+</mat-card>

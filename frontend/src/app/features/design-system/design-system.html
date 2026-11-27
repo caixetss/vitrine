@@ -75,4 +75,14 @@
       </div>
     </div>
   </section>
+
+  <section class="secao">
+    <h2>Card de produto</h2>
+    <div class="grade-produtos">
+      @for (produto of produtosDeExemplo; track produto.id) {
+        <app-produto-card [produto]="produto" />
+      }
+      <app-produto-card-esqueleto />
+    </div>
+  </section>
 </main>

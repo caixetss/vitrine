@@ -1,0 +1,50 @@
+:host {
+  display: block;
+}
+
+.card {
+  height: 100%;
+  overflow: hidden;
+}
+
+.bloco {
+  background-color: var(--mat-sys-surface-container-high);
+  animation: pulsar 1.2s ease-in-out infinite;
+}
+
+.capa {
+  aspect-ratio: 1;
+}
+
+.informacoes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+}
+
+.linha {
+  height: 14px;
+  border-radius: var(--mat-sys-corner-extra-small);
+}
+
+.curta {
+  width: 60%;
+}
+
+.preco {
+  width: 45%;
+  height: 24px;
+}
+
+@keyframes pulsar {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bloco {
+    animation: none;
+  }
+}

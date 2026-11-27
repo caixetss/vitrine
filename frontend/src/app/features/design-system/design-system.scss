@@ -53,3 +53,9 @@
   width: 100%;
   max-width: 480px;
 }
+
+.grade-produtos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
