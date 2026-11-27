@@ -1,9 +1,10 @@
-import { Component, inject, output, signal } from '@angular/core';
+import { Component, inject, output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
+import { CarrinhoStore } from '../../core/carrinho/carrinho.store';
 
 @Component({
   selector: 'app-cabecalho',
@@ -16,7 +17,7 @@ export class Cabecalho {
 
   readonly aoAbrirMenu = output<void>();
 
-  protected readonly quantidadeNoCarrinho = signal(0);
+  protected readonly carrinho = inject(CarrinhoStore);
   protected readonly campoBusca = new FormControl('', { nonNullable: true });
 
   protected aoBuscar(evento: SubmitEvent): void {

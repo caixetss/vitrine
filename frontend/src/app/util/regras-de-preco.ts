@@ -2,6 +2,7 @@ export const PARCELAS_SEM_JUROS = 10;
 export const VALOR_MINIMO_PARA_PARCELAMENTO_MAXIMO = 79;
 export const PARCELAS_ABAIXO_DO_VALOR_MINIMO = 2;
 export const DESCONTO_NO_PIX = 0.05;
+export const VALOR_MINIMO_PARA_FRETE_GRATIS = 79;
 
 export interface Parcelamento {
   quantidade: number;

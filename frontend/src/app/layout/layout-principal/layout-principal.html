@@ -25,6 +25,18 @@
     </mat-nav-list>
   </mat-sidenav>
 
+  <mat-sidenav
+    position="end"
+    mode="over"
+    class="gaveta-carrinho"
+    fixedInViewport
+    role="dialog"
+    aria-labelledby="titulo-carrinho"
+    [opened]="carrinho.ehGavetaAberta()"
+    (closedStart)="carrinho.ehGavetaAberta.set(false)">
+    <app-gaveta-carrinho />
+  </mat-sidenav>
+
   <mat-sidenav-content class="pagina">
     <div class="topo">
       <app-cabecalho (aoAbrirMenu)="gaveta.open()" />

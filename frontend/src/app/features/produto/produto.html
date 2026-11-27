@@ -153,8 +153,8 @@
   </div>
 
   <ng-template #botoesDeCompra>
-    <button mat-flat-button type="button" class="comprar" [disabled]="ehIndisponivel()">Comprar agora</button>
-    <button mat-stroked-button type="button" [disabled]="ehIndisponivel()">
+    <button mat-flat-button type="button" class="comprar" [disabled]="ehIndisponivel()" (click)="aoAdicionarAoCarrinho()">Comprar agora</button>
+    <button mat-stroked-button type="button" [disabled]="ehIndisponivel()" (click)="aoAdicionarAoCarrinho()">
       <mat-icon>add_shopping_cart</mat-icon>
       Adicionar ao carrinho
     </button>
