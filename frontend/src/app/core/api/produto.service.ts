@@ -2,7 +2,9 @@ import { HttpParams, httpResource } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { FiltroProduto, FiltrosDisponiveis, OrdemProduto } from '../../modelos/filtro-produto';
+import { AvaliacoesDoProduto } from '../../modelos/avaliacao';
 import { Pagina } from '../../modelos/pagina';
+import { ProdutoDetalhe } from '../../modelos/produto-detalhe';
 import { ProdutoResumo } from '../../modelos/produto-resumo';
 
 @Injectable({ providedIn: 'root' })
@@ -15,6 +17,21 @@ export class ProdutoService {
         params: montaParametrosDaApi(filtro).set('ordem', ordem).set('pagina', pagina),
       };
     });
+  }
+
+  buscaIndividualProduto(slug: () => string) {
+    return httpResource<ProdutoDetalhe>(() => `${environment.apiUrl}/produtos/${slug()}`);
+  }
+
+  buscaListaAvaliacao(parametrosDaBusca: () => { slug: string; pagina: number }) {
+    return httpResource<AvaliacoesDoProduto>(() => {
+      const { slug, pagina } = parametrosDaBusca();
+      return { url: `${environment.apiUrl}/produtos/${slug}/avaliacoes`, params: { pagina } };
+    });
+  }
+
+  buscaListaRelacionado(slug: () => string) {
+    return httpResource<ProdutoResumo[]>(() => `${environment.apiUrl}/produtos/${slug()}/relacionados`, { defaultValue: [] });
   }
 
   buscaFiltrosDisponiveis(filtro: () => FiltroProduto) {

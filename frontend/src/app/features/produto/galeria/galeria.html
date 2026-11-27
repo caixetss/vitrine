@@ -1,0 +1,40 @@
+@if (imagens().length > 1) {
+  <ul class="miniaturas" aria-label="Miniaturas">
+    @for (imagem of imagens(); track imagem.url; let indice = $index) {
+      <li>
+        <button
+          type="button"
+          class="miniatura"
+          [class.selecionada]="indice === indiceDaImagemSelecionada()"
+          [attr.aria-pressed]="indice === indiceDaImagemSelecionada()"
+          [attr.aria-label]="'Ver imagem ' + (indice + 1)"
+          (click)="indiceDaImagemSelecionada.set(indice)">
+          <img [src]="imagem.url" alt="" loading="lazy" width="800" height="800" />
+        </button>
+      </li>
+    }
+  </ul>
+}
+
+<div class="principal">
+  @if (imagens()[indiceDaImagemSelecionada()]; as imagem) {
+    <img class="imagem-desktop" [src]="imagem.url" [alt]="imagem.textoAlternativo" width="800" height="800" />
+  } @else {
+    <mat-icon class="sem-imagem" aria-hidden="true">image</mat-icon>
+  }
+
+  <div class="trilho" #trilho (scroll)="aoDeslizar()">
+    @for (imagem of imagens(); track imagem.url) {
+      <img [src]="imagem.url" [alt]="imagem.textoAlternativo" loading="lazy" width="800" height="800" />
+    }
+  </div>
+
+  @if (imagens().length > 1) {
+    <span class="contador">{{ indiceDaImagemSelecionada() + 1 }} / {{ imagens().length }}</span>
+    <div class="pontos" aria-hidden="true">
+      @for (imagem of imagens(); track imagem.url; let indice = $index) {
+        <span class="ponto" [class.ativo]="indice === indiceDaImagemSelecionada()"></span>
+      }
+    </div>
+  }
+</div>

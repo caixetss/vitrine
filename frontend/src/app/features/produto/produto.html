@@ -1,0 +1,173 @@
+@if (ehNaoEncontrado()) {
+  <app-nao-encontrado />
+} @else if (produto.error()) {
+  <div class="aviso">
+    <mat-icon class="icone" aria-hidden="true">cloud_off</mat-icon>
+    <h1>Não foi possível carregar o produto</h1>
+    <p>Verifique sua conexão e tente de novo.</p>
+    <button mat-flat-button type="button" (click)="produto.reload()">Tentar novamente</button>
+  </div>
+} @else if (produto.hasValue()) {
+  @let produtoAtual = produto.value();
+
+  <nav class="trilha" aria-label="Você está em">
+    <a routerLink="/">Início</a>
+    @for (categoria of caminhoDaCategoria(); track categoria.slug) {
+      <span aria-hidden="true">/</span>
+      <a [routerLink]="['/categoria', categoria.slug]">{{ categoria.nome }}</a>
+    }
+    <span aria-hidden="true">/</span>
+    <span aria-current="page">{{ produtoAtual.nome }}</span>
+  </nav>
+
+  <div class="topo">
+    <div class="galeria">
+      <app-galeria [imagens]="produtoAtual.imagens" />
+      <app-selo-desconto class="selo" [preco]="produtoAtual.preco" [precoOriginal]="produtoAtual.precoOriginal" />
+    </div>
+
+    <section class="compra" aria-label="Comprar">
+      <a class="marca" routerLink="/busca" [queryParams]="{ marcas: produtoAtual.marca.slug }">{{ produtoAtual.marca.nome }} · Ver todos os produtos da marca</a>
+      <h1 class="nome">{{ produtoAtual.nome }}</h1>
+      <div class="avaliacao">
+        <app-avaliacao-estrelas [nota]="produtoAtual.avaliacaoMedia" [total]="produtoAtual.totalAvaliacoes" />
+        <span class="detalhe">· Mais de {{ produtoAtual.totalVendidos | number }} vendidos</span>
+      </div>
+
+      <div class="caixa-preco">
+        <app-preco [preco]="produtoAtual.preco" [precoOriginal]="produtoAtual.precoOriginal" />
+        <span class="pix"><mat-icon aria-hidden="true">bolt</mat-icon>{{ valorNoPix() | currency }} no Pix ({{ percentualDescontoNoPix }}% de desconto)</span>
+      </div>
+
+      @if (produtoAtual.variacoes.length > 0) {
+        <div class="opcoes">
+          <span class="rotulo" id="rotulo-cor">Cor: <strong>{{ variacaoSelecionada()?.nomeCor }}</strong></span>
+          <div class="cores" role="radiogroup" aria-labelledby="rotulo-cor">
+            @for (variacao of produtoAtual.variacoes; track variacao.id) {
+              <button
+                mat-stroked-button
+                type="button"
+                role="radio"
+                class="cor"
+                [class.selecionada]="variacao.id === variacaoSelecionada()?.id"
+                [attr.aria-checked]="variacao.id === variacaoSelecionada()?.id"
+                (click)="variacaoSelecionada.set(variacao)">
+                <span class="amostra" [style.background-color]="variacao.corHex" aria-hidden="true"></span>
+                {{ variacao.nomeCor }}
+                @if (variacao.estoque === 0) {
+                  <span class="detalhe">(esgotado)</span>
+                }
+              </button>
+            }
+          </div>
+        </div>
+      }
+
+      @if (ehIndisponivel()) {
+        <p class="indisponivel">Indisponível</p>
+      } @else {
+        <div class="opcoes">
+          <span class="rotulo">Quantidade</span>
+          <div class="quantidade">
+            <button mat-icon-button type="button" aria-label="Diminuir quantidade" [disabled]="quantidade() <= 1" (click)="aoDiminuirQuantidade()">
+              <mat-icon>remove</mat-icon>
+            </button>
+            <span class="valor-quantidade" aria-live="polite">{{ quantidade() }}</span>
+            <button
+              mat-icon-button
+              type="button"
+              aria-label="Aumentar quantidade"
+              [disabled]="quantidade() >= estoqueDisponivel()"
+              (click)="aoAumentarQuantidade()">
+              <mat-icon>add</mat-icon>
+            </button>
+            <span class="detalhe">{{ estoqueDisponivel() }} disponíveis</span>
+          </div>
+        </div>
+      }
+
+      <div class="botoes">
+        <ng-container *ngTemplateOutlet="botoesDeCompra" />
+      </div>
+
+      <ul class="entrega">
+        @if (produtoAtual.ehFreteGratis) {
+          <li class="frete"><mat-icon aria-hidden="true">local_shipping</mat-icon><strong>Frete grátis</strong> para todo o Brasil</li>
+        }
+        <li><mat-icon aria-hidden="true">storefront</mat-icon>Vendido e entregue por Vitrine</li>
+        <li><mat-icon aria-hidden="true">undo</mat-icon>Devolução grátis em até 7 dias</li>
+        <li><mat-icon aria-hidden="true">verified_user</mat-icon>Garantia de 12 meses pelo fabricante</li>
+      </ul>
+    </section>
+  </div>
+
+  <ng-template #descricao><p class="descricao">{{ produtoAtual.descricao }}</p></ng-template>
+  <ng-template #especificacoes>
+    <table class="especificacoes">
+      <tbody>
+        @for (especificacao of produtoAtual.especificacoes; track especificacao.nome) {
+          <tr>
+            <th scope="row">{{ especificacao.nome }}</th>
+            <td>{{ especificacao.valor }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </ng-template>
+  <ng-template #avaliacoes><app-avaliacoes-produto [slug]="produtoAtual.slug" /></ng-template>
+
+  <mat-tab-group class="abas" animationDuration="0ms">
+    <mat-tab label="Descrição"><ng-container *ngTemplateOutlet="descricao" /></mat-tab>
+    <mat-tab label="Especificações"><ng-container *ngTemplateOutlet="especificacoes" /></mat-tab>
+    <mat-tab [label]="'Avaliações (' + (produtoAtual.totalAvaliacoes | number) + ')'"><ng-container *ngTemplateOutlet="avaliacoes" /></mat-tab>
+  </mat-tab-group>
+
+  <mat-accordion class="acordeoes" multi>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>Descrição</mat-expansion-panel-header>
+      <ng-container *ngTemplateOutlet="descricao" />
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>Especificações</mat-expansion-panel-header>
+      <ng-container *ngTemplateOutlet="especificacoes" />
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>Avaliações ({{ produtoAtual.totalAvaliacoes | number }})</mat-expansion-panel-header>
+      <ng-template matExpansionPanelContent><ng-container *ngTemplateOutlet="avaliacoes" /></ng-template>
+    </mat-expansion-panel>
+  </mat-accordion>
+
+  @if (relacionados.value().length > 0) {
+    <section class="relacionados">
+      <h2>Quem viu este produto também viu</h2>
+      <div class="grade">
+        @for (relacionado of relacionados.value(); track relacionado.id) {
+          <app-produto-card [produto]="relacionado" />
+        }
+      </div>
+    </section>
+  }
+
+  <div class="barra-celular">
+    <ng-container *ngTemplateOutlet="botoesDeCompra" />
+  </div>
+
+  <ng-template #botoesDeCompra>
+    <button mat-flat-button type="button" class="comprar" [disabled]="ehIndisponivel()">Comprar agora</button>
+    <button mat-stroked-button type="button" [disabled]="ehIndisponivel()">
+      <mat-icon>add_shopping_cart</mat-icon>
+      Adicionar ao carrinho
+    </button>
+  </ng-template>
+} @else {
+  <div class="topo esqueleto" aria-hidden="true">
+    <div class="bloco imagem"></div>
+    <div class="compra">
+      <div class="bloco linha"></div>
+      <div class="bloco linha titulo"></div>
+      <div class="bloco linha curta"></div>
+      <div class="bloco caixa"></div>
+      <div class="bloco linha"></div>
+    </div>
+  </div>
+}

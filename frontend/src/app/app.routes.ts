@@ -11,7 +11,7 @@ export const routes: Routes = [
       { path: '', loadComponent: carregaEmConstrucao, data: { titulo: 'Página inicial' } },
       { path: 'categoria/:slug', loadComponent: carregaListagem },
       { path: 'busca', loadComponent: carregaListagem },
-      { path: 'produto/:slug', loadComponent: carregaEmConstrucao, data: { titulo: 'Página do produto' } },
+      { path: 'produto/:slug', loadComponent: () => import('./features/produto/produto').then((m) => m.Produto) },
       { path: 'design-system', loadComponent: () => import('./features/design-system/design-system').then((m) => m.DesignSystem) },
       { path: '**', loadComponent: () => import('./features/nao-encontrado/nao-encontrado').then((m) => m.NaoEncontrado) },
     ],

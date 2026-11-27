@@ -1,0 +1,55 @@
+@if (resumo(); as resumo) {
+  <div class="conteudo">
+    <div class="resumo">
+      <strong class="media">{{ resumo.media | number: '1.1-1' }}</strong>
+      <span class="estrelas" [attr.aria-label]="'Nota ' + (resumo.media | number: '1.1-1') + ' de 5'">
+        @for (estrela of posicoesDasEstrelas; track estrela) {
+          <mat-icon aria-hidden="true" [class.cheia]="estrela <= resumo.media + 0.5">star</mat-icon>
+        }
+      </span>
+      <span class="total">{{ resumo.total | number }} avaliações</span>
+
+      <ul class="distribuicao">
+        @for (linha of distribuicao(); track linha.nota) {
+          <li>
+            <span>{{ linha.nota }} {{ linha.nota === 1 ? 'estrela' : 'estrelas' }}</span>
+            <mat-progress-bar mode="determinate" [value]="linha.percentual" [attr.aria-label]="linha.percentual + '% com ' + linha.nota + ' estrelas'" />
+            <span class="percentual">{{ linha.percentual }}%</span>
+          </li>
+        }
+      </ul>
+    </div>
+
+    <div class="lista">
+      @for (avaliacao of avaliacoesCarregadas(); track $index) {
+        <article class="avaliacao">
+          <header>
+            <span class="avatar" aria-hidden="true">{{ avaliacao.nomeAutor.charAt(0) }}</span>
+            <div>
+              <strong>{{ avaliacao.nomeAutor }}</strong>
+              <span class="detalhe">
+                {{ avaliacao.criadoEm | date: 'd MMM y' }}
+                @if (avaliacao.ehCompraVerificada) {
+                  · Compra verificada
+                }
+              </span>
+            </div>
+          </header>
+          <span class="estrelas pequenas" [attr.aria-label]="'Nota ' + avaliacao.nota + ' de 5'">
+            @for (estrela of posicoesDasEstrelas; track estrela) {
+              <mat-icon aria-hidden="true" [class.cheia]="estrela <= avaliacao.nota">star</mat-icon>
+            }
+          </span>
+          <h3>{{ avaliacao.titulo }}</h3>
+          <p>{{ avaliacao.comentario }}</p>
+        </article>
+      } @empty {
+        <p class="detalhe">Este produto ainda não tem avaliações.</p>
+      }
+
+      @if (temMaisAvaliacoes()) {
+        <button mat-stroked-button type="button" [disabled]="respostaDasAvaliacoes.isLoading()" (click)="paginaDeAvaliacoes.set(paginaDeAvaliacoes() + 1)">Ver mais avaliações</button>
+      }
+    </div>
+  </div>
+}

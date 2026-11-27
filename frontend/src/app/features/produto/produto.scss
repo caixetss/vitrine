@@ -1,0 +1,330 @@
+.trilha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-on-surface-variant);
+
+  a {
+    color: inherit;
+  }
+
+  [aria-current] {
+    color: var(--mat-sys-on-surface);
+  }
+}
+
+.topo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 440px);
+  align-items: start;
+  gap: 32px;
+}
+
+.galeria {
+  position: relative;
+}
+
+.selo {
+  position: absolute;
+  top: 12px;
+  left: 88px;
+}
+
+.compra {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.marca {
+  font: var(--mat-sys-label-large);
+  color: var(--mat-sys-primary);
+}
+
+.nome {
+  margin: 0;
+  font: var(--mat-sys-headline-small);
+  font-weight: 700;
+}
+
+.avaliacao {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.detalhe {
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.caixa-preco {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: var(--mat-sys-corner-medium);
+}
+
+.pix {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font: var(--mat-sys-label-large);
+  color: var(--cor-sucesso);
+
+  mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+  }
+}
+
+.opcoes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rotulo {
+  font: var(--mat-sys-body-medium);
+}
+
+.cores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cor.selecionada {
+  border-color: var(--mat-sys-primary);
+  border-width: 2px;
+}
+
+.amostra {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 50%;
+}
+
+.quantidade {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.valor-quantidade {
+  min-width: 32px;
+  text-align: center;
+  font: var(--mat-sys-title-medium);
+}
+
+.indisponivel {
+  margin: 0;
+  font: var(--mat-sys-title-medium);
+  color: var(--mat-sys-error);
+}
+
+.botoes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+
+  button {
+    height: 48px;
+  }
+}
+
+.entrega {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: var(--mat-sys-corner-medium);
+  list-style: none;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font: var(--mat-sys-body-medium);
+  }
+
+  mat-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  .frete,
+  .frete mat-icon {
+    color: var(--cor-sucesso);
+  }
+}
+
+.abas {
+  margin-top: 48px;
+}
+
+.acordeoes {
+  display: none;
+}
+
+.descricao {
+  max-width: 720px;
+  margin: 24px 0;
+  white-space: pre-line;
+}
+
+.especificacoes {
+  width: 100%;
+  max-width: 720px;
+  margin: 24px 0;
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+    text-align: left;
+    font: var(--mat-sys-body-medium);
+  }
+
+  th {
+    width: 40%;
+    font-weight: 400;
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
+app-avaliacoes-produto {
+  display: block;
+  margin: 24px 0;
+}
+
+.relacionados {
+  margin-top: 48px;
+
+  h2 {
+    font: var(--mat-sys-title-large);
+    font-weight: 700;
+  }
+}
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.barra-celular {
+  display: none;
+}
+
+.aviso {
+  padding: 48px 16px;
+  text-align: center;
+  color: var(--mat-sys-on-surface-variant);
+
+  h1 {
+    color: var(--mat-sys-on-surface);
+    font: var(--mat-sys-title-large);
+  }
+}
+
+.icone {
+  width: 48px;
+  height: 48px;
+  font-size: 48px;
+  color: var(--mat-sys-primary);
+}
+
+.bloco {
+  border-radius: var(--mat-sys-corner-small);
+  background-color: var(--mat-sys-surface-container-high);
+  animation: pulsar 1.2s ease-in-out infinite;
+}
+
+.esqueleto {
+  .imagem {
+    aspect-ratio: 1;
+    border-radius: var(--mat-sys-corner-large);
+  }
+
+  .linha {
+    height: 16px;
+  }
+
+  .titulo {
+    height: 32px;
+  }
+
+  .curta {
+    width: 50%;
+  }
+
+  .caixa {
+    height: 120px;
+  }
+}
+
+@keyframes pulsar {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bloco {
+    animation: none;
+  }
+}
+
+@media (max-width: 959px) {
+  .topo {
+    grid-template-columns: 1fr;
+  }
+
+  .selo {
+    left: 12px;
+  }
+
+  .botoes,
+  .abas {
+    display: none;
+  }
+
+  .acordeoes {
+    display: block;
+    margin-top: 32px;
+  }
+
+  .barra-celular {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 5;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 12px 16px;
+    background-color: var(--mat-sys-surface);
+    box-shadow: var(--mat-sys-level2);
+  }
+
+  :host {
+    display: block;
+    padding-bottom: 72px;
+  }
+}
