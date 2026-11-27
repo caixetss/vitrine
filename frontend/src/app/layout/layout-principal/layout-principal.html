@@ -1,0 +1,40 @@
+<a class="pular-para-conteudo" href="#conteudo" (click)="aoPularParaConteudo($event)">Pular para o conteúdo</a>
+
+<mat-sidenav-container class="container">
+  <mat-sidenav #gaveta mode="over" class="gaveta" aria-label="Todas as categorias">
+    <div class="gaveta-topo">
+      <span class="gaveta-titulo">Categorias</span>
+      <button mat-icon-button type="button" aria-label="Fechar menu" (click)="gaveta.close()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <mat-nav-list>
+      @for (categoria of categorias.value(); track categoria.id) {
+        <a mat-list-item [routerLink]="['/categoria', categoria.slug]" (click)="gaveta.close()">
+          @if (categoria.icone) {
+            <mat-icon matListItemIcon>{{ categoria.icone }}</mat-icon>
+          }
+          <span matListItemTitle>{{ categoria.nome }}</span>
+        </a>
+        @for (subcategoria of categoria.subcategorias; track subcategoria.id) {
+          <a mat-list-item class="subcategoria" [routerLink]="['/categoria', subcategoria.slug]" (click)="gaveta.close()">
+            {{ subcategoria.nome }}
+          </a>
+        }
+      }
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="pagina">
+    <div class="topo">
+      <app-cabecalho (aoAbrirMenu)="gaveta.open()" />
+      <app-menu-categorias />
+    </div>
+
+    <main id="conteudo" #conteudo tabindex="-1" class="conteudo">
+      <router-outlet />
+    </main>
+
+    <app-rodape />
+  </mat-sidenav-content>
+</mat-sidenav-container>

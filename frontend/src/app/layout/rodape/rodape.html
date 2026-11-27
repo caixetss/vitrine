@@ -1,0 +1,31 @@
+<footer class="rodape">
+  <div class="conteudo">
+    <div class="marca">
+      <span class="logo">
+        <span class="logo-icone" aria-hidden="true"><mat-icon>shopping_bag</mat-icon></span>
+        vitrine
+      </span>
+      <p>Milhares de produtos de todas as categorias, com entrega para todo o Brasil e parcelamento sem juros.</p>
+    </div>
+
+    @for (coluna of colunas; track coluna.titulo) {
+      <section class="coluna">
+        <h2>{{ coluna.titulo }}</h2>
+        <ul>
+          @for (item of coluna.itens; track item) {
+            <li>{{ item }}</li>
+          }
+        </ul>
+      </section>
+    }
+  </div>
+
+  <div class="base">
+    <p>© {{ anoAtual }} Vitrine · Projeto de portfólio, loja fictícia</p>
+    <ul class="pagamentos" aria-label="Formas de pagamento">
+      @for (forma of formasDePagamento; track forma) {
+        <li>{{ forma }}</li>
+      }
+    </ul>
+  </div>
+</footer>
