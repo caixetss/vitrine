@@ -10,7 +10,11 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-0f172a?style=flat-square&logo=postgresql&logoColor=white)
 [![Backend](https://github.com/caixetss/vitrine/actions/workflows/backend.yml/badge.svg)](https://github.com/caixetss/vitrine/actions/workflows/backend.yml)
 [![Frontend](https://github.com/caixetss/vitrine/actions/workflows/frontend.yml/badge.svg)](https://github.com/caixetss/vitrine/actions/workflows/frontend.yml)
-![Status](https://img.shields.io/badge/status-em_desenvolvimento-4f46e5?style=flat-square)
+[![Deploy](https://github.com/caixetss/vitrine/actions/workflows/deploy.yml/badge.svg)](https://github.com/caixetss/vitrine/actions/workflows/deploy.yml)
+
+### [Ver a loja funcionando →](https://vitrine.bravecliff-16d659df.brazilsouth.azurecontainerapps.io)
+
+<sub>Hospedada em servidor gratuito: se ninguém acessou nos últimos minutos, o primeiro carregamento leva de 30 a 60 segundos.</sub>
 
 </div>
 
@@ -22,7 +26,13 @@ A Vitrine é uma loja virtual fictícia com os fluxos principais de um marketpla
 
 O projeto foi feito como um produto real: começou pela engenharia (histórias de usuário, modelo de dados, contrato da API e decisões de arquitetura) e só depois foi para o código, com testes e CI desde o início.
 
-> **Situação atual:** o backend do MVP está pronto e testado. O frontend está em desenvolvimento.
+| Página inicial | Listagem com filtros |
+|---|---|
+| ![Página inicial](docs/imagens/home.png) | ![Listagem com filtros](docs/imagens/listagem.png) |
+
+| Página do produto | Celular |
+|---|---|
+| ![Página do produto](docs/imagens/produto.png) | ![Página inicial no celular](docs/imagens/celular.png) |
 
 ## Destaques técnicos
 
@@ -34,17 +44,19 @@ O projeto foi feito como um produto real: começou pela engenharia (histórias d
 | Busca sem acento e sem extensão no banco | "camera" encontra "Câmera" usando uma função nativa do PostgreSQL | [decisões](docs/decisoes.md) |
 | Erros sempre no mesmo formato | qualquer erro (400, 404, 500) volta como `ErroDto`, com mensagens em português e sem expor detalhes internos | [`TratadorGlobalExcecoes`](backend/src/main/java/io/github/caixetss/vitrine/excecao/TratadorGlobalExcecoes.java) |
 | Banco versionado | o schema é criado por migrations (Flyway) e o Hibernate só confere se as classes batem com as tabelas | [migrations](backend/src/main/resources/db/migration) |
-| Testes com banco de verdade | 58 testes; os de integração sobem um PostgreSQL no Docker (Testcontainers) e cada teste cria os próprios dados | [docs/testes.md](docs/testes.md) |
+| Testes com banco de verdade | 60 testes no backend; os de integração sobem um PostgreSQL no Docker (Testcontainers) e cada teste cria os próprios dados | [docs/testes.md](docs/testes.md) |
 | API documentada | Swagger em português, com exemplos prontos para testar; desligado em produção por padrão | [Swagger](#documentação-da-api-swagger) |
-| Integração contínua | todo push roda build e testes no GitHub Actions | [workflows](.github/workflows) |
+| Integração e entrega contínuas | todo push roda os testes; na `main`, se passarem, a imagem é montada e publicada na Azure sozinha | [workflows](.github/workflows) |
+| Front e back em uma imagem só | o Dockerfile monta o Angular e o coloca dentro do Spring: um endereço, sem CORS | [`Dockerfile`](Dockerfile) |
 
 ## Arquitetura
 
 ```
-Navegador (Angular)  ──HTTP/JSON──►  API (Spring Boot)  ──JPA──►  PostgreSQL
+Navegador (Angular)  ──HTTP/JSON──►  API (Spring Boot)  ──JPA──►  PostgreSQL (Neon)
                                      controller → service → repository
 ```
 
+- Em produção, uma imagem Docker na Azure Container Apps entrega a loja e a API no mesmo endereço.
 - O front só conversa com a API, nunca com o banco.
 - A API é organizada em camadas: o **controller** recebe o pedido, o **service** aplica as regras e o **repository** fala com o banco. As entidades nunca saem na resposta; a API devolve só DTOs.
 - Cada decisão (e o motivo dela) está em [docs/decisoes.md](docs/decisoes.md).
@@ -92,7 +104,7 @@ No MVP, o catálogo vem de dados de exemplo nas migrations: 41 produtos em 10 ca
 | Documentação da API | springdoc-openapi (Swagger) |
 | Testes | JUnit 5, Mockito, AssertJ, Testcontainers, Datafaker |
 | Frontend | Angular 22 (standalone components, signals), Angular Material 22 (Material Design 3), TypeScript, SCSS |
-| Infra | Docker Compose, GitHub Actions |
+| Infra | Docker, Docker Compose, GitHub Actions, Azure Container Apps, Neon (PostgreSQL) |
 
 ## Documentação
 
@@ -111,8 +123,9 @@ vitrine/
 ├── backend/            API REST em Spring Boot
 ├── frontend/           aplicação Angular
 ├── docs/               documentação do projeto
+├── Dockerfile          imagem de produção (front + back)
 ├── docker-compose.yml  banco local
-└── .github/workflows/  CI
+└── .github/workflows/  CI e deploy
 ```
 
 ## Execução local
@@ -187,8 +200,8 @@ Os testes do backend precisam do Docker aberto. Como eles são organizados: [doc
 - [x] API de produtos com filtros, ordenação e paginação
 - [x] API de página de produto, avaliações e relacionados
 - [x] Tratamento de erros padronizado e documentação Swagger
-- [ ] Frontend: layout, listagem, página de produto, carrinho e home
-- [ ] Deploy
+- [x] Frontend: layout, listagem, página de produto, carrinho e home
+- [x] Deploy na Azure com publicação automática
 - [ ] Pós-MVP: autenticação com Spring Security, checkout, painel administrativo
 
 Acompanhe pelo [quadro do projeto](https://github.com/users/caixetss/projects/4).
