@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
 
 interface ColunaDoRodape {
   titulo: string;
@@ -8,7 +7,7 @@ interface ColunaDoRodape {
 
 @Component({
   selector: 'app-rodape',
-  imports: [MatIconModule],
+  imports: [],
   templateUrl: './rodape.html',
   styleUrl: './rodape.scss',
 })

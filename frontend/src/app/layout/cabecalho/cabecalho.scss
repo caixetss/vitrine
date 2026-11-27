@@ -23,11 +23,9 @@
 }
 
 .logo-icone {
-  display: inline-flex;
-  padding: 6px;
-  border-radius: var(--mat-sys-corner-small);
-  background-color: var(--mat-sys-primary);
-  color: var(--mat-sys-on-primary);
+  display: block;
+  width: 36px;
+  height: 36px;
 }
 
 .logo-nome {

@@ -3,12 +3,11 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-cabecalho',
-  imports: [ReactiveFormsModule, RouterLink, MatBadgeModule, MatButtonModule, MatIconModule, MatTooltipModule],
+  imports: [ReactiveFormsModule, RouterLink, MatBadgeModule, MatButtonModule, MatIconModule],
   templateUrl: './cabecalho.html',
   styleUrl: './cabecalho.scss',
 })
