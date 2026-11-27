@@ -31,8 +31,8 @@ public class ProdutoController {
 	public PaginaDto<ProdutoResumoDto> buscaListaProduto(
 			@Valid ProdutoFiltro filtro,
 			@RequestParam(defaultValue = "relevancia") OrdemProduto ordem,
-			@RequestParam(defaultValue = "0") @Min(0) int pagina,
-			@RequestParam(defaultValue = "20") @Min(1) @Max(60) int tamanho) {
+			@RequestParam(defaultValue = "0") @Min(value = 0, message = "não pode ser negativa") int pagina,
+			@RequestParam(defaultValue = "20") @Min(value = 1, message = "deve ser entre 1 e 60") @Max(value = 60, message = "deve ser entre 1 e 60") int tamanho) {
 		return produtoService.buscaListaProduto(filtro, ordem, pagina, tamanho);
 	}
 

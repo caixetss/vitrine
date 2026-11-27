@@ -22,8 +22,8 @@ public class AvaliacaoController {
 	@GetMapping
 	public AvaliacoesDoProdutoDto buscaListaAvaliacaoDoProduto(
 			@PathVariable String slug,
-			@RequestParam(defaultValue = "0") @Min(0) int pagina,
-			@RequestParam(defaultValue = "5") @Min(1) @Max(60) int tamanho) {
+			@RequestParam(defaultValue = "0") @Min(value = 0, message = "não pode ser negativa") int pagina,
+			@RequestParam(defaultValue = "5") @Min(value = 1, message = "deve ser entre 1 e 60") @Max(value = 60, message = "deve ser entre 1 e 60") int tamanho) {
 		return avaliacaoService.buscaListaAvaliacaoDoProduto(slug, pagina, tamanho);
 	}
 

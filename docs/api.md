@@ -54,6 +54,7 @@ Corpo padrão (`ErroDto`):
 |---|---|---|
 | 400 | parâmetro inválido (tipo errado, fora do intervalo, valor de ordenação desconhecido) | lista dos campos com erro |
 | 404 | slug inexistente ou recurso inativo | `[]` |
+| 422 | regra de negócio impede a operação (pós-MVP: checkout, cupom) | `[]` |
 | 500 | erro inesperado; mensagem genérica, sem stack trace | `[]` |
 
 ## 4. `GET /api/categorias`
