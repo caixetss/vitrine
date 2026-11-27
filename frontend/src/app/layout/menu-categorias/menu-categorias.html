@@ -1,0 +1,40 @@
+<nav class="menu" aria-label="Categorias">
+  <div class="faixa">
+    <button mat-button type="button" class="todas" [matMenuTriggerFor]="menuTodas">
+      <mat-icon>menu</mat-icon>
+      Todas as categorias
+    </button>
+
+    <a mat-button routerLink="/busca" [queryParams]="{ ordem: 'maior-desconto' }" class="destaque">Ofertas do dia</a>
+
+    @for (categoria of categorias.value(); track categoria.id) {
+      <a mat-button [routerLink]="['/categoria', categoria.slug]" routerLinkActive="ativa">{{ categoria.nome }}</a>
+    }
+  </div>
+</nav>
+
+<mat-menu #menuTodas="matMenu">
+  @for (categoria of categorias.value(); track categoria.id) {
+    @if (categoria.subcategorias.length > 0) {
+      <button mat-menu-item [matMenuTriggerFor]="subcategorias" [matMenuTriggerData]="{ categoria }">
+        @if (categoria.icone) {
+          <mat-icon>{{ categoria.icone }}</mat-icon>
+        }
+        {{ categoria.nome }}
+      </button>
+    } @else {
+      <a mat-menu-item [routerLink]="['/categoria', categoria.slug]">{{ categoria.nome }}</a>
+    }
+  } @empty {
+    <span mat-menu-item disabled>Nenhuma categoria disponível</span>
+  }
+</mat-menu>
+
+<mat-menu #subcategorias="matMenu">
+  <ng-template matMenuContent let-categoria="categoria">
+    <a mat-menu-item [routerLink]="['/categoria', categoria.slug]">Tudo em {{ categoria.nome }}</a>
+    @for (subcategoria of categoria.subcategorias; track subcategoria.id) {
+      <a mat-menu-item [routerLink]="['/categoria', subcategoria.slug]">{{ subcategoria.nome }}</a>
+    }
+  </ng-template>
+</mat-menu>

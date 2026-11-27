@@ -1,0 +1,37 @@
+.menu {
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+.faixa {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  a,
+  button {
+    flex-shrink: 0;
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
+.todas {
+  font-weight: 600;
+  color: var(--mat-sys-on-surface) !important;
+}
+
+.destaque,
+.ativa {
+  color: var(--mat-sys-primary) !important;
+  font-weight: 600;
+}
+
+@media (max-width: 959px) {
+  .todas {
+    display: none;
+  }
+}
