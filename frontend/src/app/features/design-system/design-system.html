@@ -1,9 +1,9 @@
 <main class="pagina">
   <header class="cabecalho">
     <h1>Design system da Vitrine</h1>
-    <button mat-stroked-button type="button" (click)="aoAlternarTema()">
-      <mat-icon>{{ ehTemaEscuro() ? 'light_mode' : 'dark_mode' }}</mat-icon>
-      {{ ehTemaEscuro() ? 'Tema claro' : 'Tema escuro' }}
+    <button mat-stroked-button type="button" (click)="tema.alternar()">
+      <mat-icon>{{ tema.ehTemaEscuro() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+      {{ tema.ehTemaEscuro() ? 'Tema claro' : 'Tema escuro' }}
     </button>
   </header>
 

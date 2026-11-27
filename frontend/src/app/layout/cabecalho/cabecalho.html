@@ -25,6 +25,13 @@
       <mat-icon>location_on</mat-icon>
       <span class="texto-duplo"><small>Enviar para</small>01310-100</span>
     </button>
+    <button
+      mat-icon-button
+      type="button"
+      [attr.aria-label]="tema.ehTemaEscuro() ? 'Usar tema claro' : 'Usar tema escuro'"
+      (click)="tema.alternar()">
+      <mat-icon>{{ tema.ehTemaEscuro() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+    </button>
     <button mat-button type="button" class="conta">
       <mat-icon>person</mat-icon>
       <span class="texto-duplo"><small>Olá, faça seu login</small>Minha conta</span>

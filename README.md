@@ -91,7 +91,7 @@ mvn verify
 | Produto | galeria, cores, preço, parcelamento, valor no Pix, especificações, avaliações, relacionados | frete por CEP, escrever avaliação |
 | Carrinho | adicionar, remover, alterar quantidade, total e economia (salvo no navegador) | cupom, checkout e pedidos |
 | Conta | navegação sem login | login, cadastro, favoritos ([#22](https://github.com/caixetss/vitrine/issues/22)) |
-| Interface | layout responsivo | modo escuro |
+| Interface | layout responsivo e modo escuro (segue o sistema e lembra a escolha) | — |
 
 No MVP, o catálogo vem de dados de exemplo nas migrations: 41 produtos em 10 categorias.
 

@@ -22,5 +22,7 @@ export function calculaPercentualDeDesconto(preco: number, precoOriginal: number
 }
 
 export function calculaValorNoPix(preco: number): number {
-  return Math.round(preco * (1 - DESCONTO_NO_PIX) * 100) / 100;
+  const centavos = Math.round(preco * 100);
+  const percentualPago = 100 - Math.round(DESCONTO_NO_PIX * 100);
+  return Math.round((centavos * percentualPago) / 100) / 100;
 }

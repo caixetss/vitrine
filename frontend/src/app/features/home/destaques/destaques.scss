@@ -55,7 +55,7 @@
 .selo-banner {
   padding: 4px 12px;
   border-radius: var(--mat-sys-corner-full);
-  background-color: rgb(255 255 255 / 18%);
+  background-color: rgb(0 0 0 / 22%);
   font: var(--mat-sys-label-medium);
   text-transform: uppercase;
 }
@@ -91,25 +91,37 @@
 
 .pontos {
   position: absolute;
-  bottom: 16px;
-  left: 40px;
+  bottom: 8px;
+  left: 32px;
   display: flex;
-  gap: 6px;
 }
 
 .ponto {
-  width: 8px;
-  height: 8px;
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
   padding: 0;
   border: none;
-  border-radius: var(--mat-sys-corner-full);
-  background-color: rgb(255 255 255 / 45%);
+  background: none;
   cursor: pointer;
-  transition: width 200ms;
+
+  &::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: var(--mat-sys-corner-full);
+    background-color: rgb(255 255 255 / 45%);
+    transition: width 200ms;
+  }
 
   &.ativo {
-    width: 20px;
-    background-color: var(--mat-sys-on-primary);
+    width: 32px;
+
+    &::before {
+      width: 20px;
+      background-color: var(--mat-sys-on-primary);
+    }
   }
 }
 
@@ -202,6 +214,6 @@
   }
 
   .pontos {
-    left: 24px;
+    left: 16px;
   }
 }

@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
 import { CarrinhoStore } from '../../core/carrinho/carrinho.store';
+import { TemaStore } from '../../core/tema/tema.store';
 
 @Component({
   selector: 'app-cabecalho',
@@ -18,6 +19,7 @@ export class Cabecalho {
   readonly aoAbrirMenu = output<void>();
 
   protected readonly carrinho = inject(CarrinhoStore);
+  protected readonly tema = inject(TemaStore);
   protected readonly campoBusca = new FormControl('', { nonNullable: true });
 
   protected aoBuscar(evento: SubmitEvent): void {

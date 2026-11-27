@@ -33,5 +33,10 @@ describe('regras-de-preco', () => {
     it('deve aplicar 5% de desconto', () => {
       expect(calculaValorNoPix(1599)).toBe(1519.05);
     });
+
+    it('deve arredondar meio centavo para cima, como na conta feita à mão', () => {
+      expect(calculaValorNoPix(59.9)).toBe(56.91);
+      expect(calculaValorNoPix(279.9)).toBe(265.91);
+    });
   });
 });
