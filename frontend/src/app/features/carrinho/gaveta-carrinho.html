@@ -1,0 +1,101 @@
+<header class="topo">
+  <h2 id="titulo-carrinho">Seu carrinho <span class="detalhe">({{ carrinho.quantidadeTotal() }} {{ carrinho.quantidadeTotal() === 1 ? 'item' : 'itens' }})</span></h2>
+  <button mat-icon-button type="button" aria-label="Fechar carrinho" (click)="carrinho.ehGavetaAberta.set(false)">
+    <mat-icon>close</mat-icon>
+  </button>
+</header>
+
+@if (carrinho.itens().length === 0) {
+  <div class="vazio">
+    <mat-icon class="icone" aria-hidden="true">shopping_cart</mat-icon>
+    <h3>Seu carrinho está vazio</h3>
+    <p class="detalhe">Navegue pelas categorias e adicione os produtos que quiser.</p>
+    <a mat-flat-button routerLink="/" (click)="carrinho.ehGavetaAberta.set(false)">Ir para a página inicial</a>
+  </div>
+} @else {
+  <div class="frete" [class.atingido]="carrinho.ehFreteGratis()">
+    @if (carrinho.ehFreteGratis()) {
+      <span><mat-icon aria-hidden="true">check</mat-icon>Você ganhou frete grátis!</span>
+    } @else {
+      <span>Faltam <strong>{{ carrinho.faltaParaFreteGratis() | currency }}</strong> para ganhar frete grátis</span>
+    }
+    <mat-progress-bar mode="determinate" [value]="progressoDoFreteGratis()" aria-label="Progresso para o frete grátis" />
+  </div>
+
+  <ul class="itens">
+    @for (item of carrinho.itens(); track item.idVariacao) {
+      <li class="item">
+        <a class="imagem" [routerLink]="['/produto', item.slugProduto]" (click)="carrinho.ehGavetaAberta.set(false)">
+          @if (item.imagem) {
+            <img [src]="item.imagem" alt="" width="72" height="72" />
+          } @else {
+            <mat-icon aria-hidden="true">image</mat-icon>
+          }
+        </a>
+        <div class="informacoes">
+          <a class="nome" [routerLink]="['/produto', item.slugProduto]" (click)="carrinho.ehGavetaAberta.set(false)">{{ item.nome }}</a>
+          <span class="detalhe">Cor: {{ item.nomeCor }}</span>
+          <div class="quantidade">
+            <button
+              mat-icon-button
+              type="button"
+              [attr.aria-label]="'Diminuir quantidade de ' + item.nome"
+              [disabled]="item.quantidade <= 1"
+              (click)="carrinho.alterarQuantidade(item.idVariacao, item.quantidade - 1)">
+              <mat-icon>remove</mat-icon>
+            </button>
+            <span aria-live="polite">{{ item.quantidade }}</span>
+            <button
+              mat-icon-button
+              type="button"
+              [attr.aria-label]="'Aumentar quantidade de ' + item.nome"
+              [disabled]="item.quantidade >= item.estoque"
+              (click)="carrinho.alterarQuantidade(item.idVariacao, item.quantidade + 1)">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+        </div>
+        <div class="lado">
+          <button mat-icon-button type="button" [attr.aria-label]="'Remover ' + item.nome" (click)="carrinho.remover(item.idVariacao)">
+            <mat-icon>delete</mat-icon>
+          </button>
+          @if (item.precoOriginal) {
+            <s class="detalhe">{{ item.precoOriginal * item.quantidade | currency }}</s>
+          }
+          <strong>{{ item.preco * item.quantidade | currency }}</strong>
+        </div>
+      </li>
+    }
+  </ul>
+
+  <div class="resumo">
+    <div class="cupom">
+      <input type="text" placeholder="Cupom de desconto" aria-label="Cupom de desconto" disabled />
+      <button mat-stroked-button type="button" disabled>Aplicar</button>
+    </div>
+
+    <dl class="valores">
+      <dt>Subtotal</dt>
+      <dd>{{ carrinho.subtotal() | currency }}</dd>
+      <dt>Frete</dt>
+      <dd [class.gratis]="carrinho.ehFreteGratis()">{{ carrinho.ehFreteGratis() ? 'Grátis' : 'Calculado na entrega' }}</dd>
+    </dl>
+    <mat-divider />
+    <div class="total">
+      <span>Total</span>
+      <strong>{{ carrinho.total() | currency }}</strong>
+    </div>
+    <p class="condicoes">
+      em até {{ carrinho.parcelamento().quantidade }}x de {{ carrinho.parcelamento().valorDaParcela | currency }} sem juros
+      <span class="pix">ou {{ carrinho.valorNoPix() | currency }} no Pix</span>
+    </p>
+
+    @if (carrinho.economia() > 0) {
+      <p class="economia">Você está economizando {{ carrinho.economia() | currency }}</p>
+    }
+
+    <button mat-flat-button type="button" class="finalizar" disabled>Finalizar compra</button>
+    <p class="detalhe aviso-checkout">Finalizar compra estará disponível em breve.</p>
+    <button mat-button type="button" (click)="carrinho.ehGavetaAberta.set(false)">Continuar comprando</button>
+  </div>
+}

@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterLink } from '@angular/router';
 import { ProdutoService } from '../../core/api/produto.service';
+import { CarrinhoStore } from '../../core/carrinho/carrinho.store';
 import { CategoriaDoProduto, Variacao } from '../../modelos/produto-detalhe';
 import { AvaliacaoEstrelas } from '../../shared/avaliacao-estrelas/avaliacao-estrelas';
 import { Preco } from '../../shared/preco/preco';
@@ -41,6 +42,7 @@ import { Galeria } from './galeria/galeria';
 })
 export class Produto {
   private readonly produtoService = inject(ProdutoService);
+  private readonly carrinho = inject(CarrinhoStore);
 
   readonly slug = input.required<string>();
 
@@ -66,6 +68,24 @@ export class Produto {
 
   protected aoAumentarQuantidade(): void {
     this.quantidade.update((quantidade) => Math.min(this.estoqueDisponivel(), quantidade + 1));
+  }
+
+  protected aoAdicionarAoCarrinho(): void {
+    const variacao = this.variacaoSelecionada();
+    if (!variacao || !this.produto.hasValue()) return;
+    const produto = this.produto.value();
+    this.carrinho.adicionar({
+      idVariacao: variacao.id,
+      slugProduto: produto.slug,
+      nome: produto.nome,
+      nomeCor: variacao.nomeCor,
+      imagem: produto.imagens[0]?.url ?? null,
+      preco: produto.preco,
+      precoOriginal: produto.precoOriginal,
+      quantidade: this.quantidade(),
+      estoque: variacao.estoque,
+    });
+    this.carrinho.ehGavetaAberta.set(true);
   }
 }
 

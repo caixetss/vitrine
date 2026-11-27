@@ -35,10 +35,11 @@
     <button
       mat-icon-button
       type="button"
-      [attr.aria-label]="'Carrinho, ' + quantidadeNoCarrinho() + ' itens'"
-      [matBadge]="quantidadeNoCarrinho()"
-      [matBadgeHidden]="quantidadeNoCarrinho() === 0"
-      matBadgeSize="small">
+      [attr.aria-label]="'Carrinho, ' + carrinho.quantidadeTotal() + ' itens'"
+      [matBadge]="carrinho.quantidadeTotal()"
+      [matBadgeHidden]="carrinho.quantidadeTotal() === 0"
+      matBadgeSize="small"
+      (click)="carrinho.ehGavetaAberta.set(true)">
       <mat-icon>shopping_cart</mat-icon>
     </button>
   </div>
