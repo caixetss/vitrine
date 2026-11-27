@@ -1,0 +1,9 @@
+.selo {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--mat-sys-corner-small);
+  background-color: var(--cor-fundo-desconto);
+  color: var(--cor-desconto);
+  font: var(--mat-sys-label-medium);
+  font-weight: 700;
+}

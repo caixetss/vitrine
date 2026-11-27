@@ -1,0 +1,21 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.preco-original {
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.preco-atual {
+  font: var(--mat-sys-title-large);
+  font-weight: 700;
+  color: var(--mat-sys-on-surface);
+}
+
+.parcelamento {
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-on-surface-variant);
+}

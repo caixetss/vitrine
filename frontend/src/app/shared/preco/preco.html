@@ -1,0 +1,7 @@
+@if (precoOriginal(); as original) {
+  <s class="preco-original" aria-label="Preço anterior">{{ original | currency }}</s>
+}
+<strong class="preco-atual">{{ preco() | currency }}</strong>
+<span class="parcelamento">
+  em {{ parcelamento().quantidade }}x de {{ parcelamento().valorDaParcela | currency }} sem juros
+</span>

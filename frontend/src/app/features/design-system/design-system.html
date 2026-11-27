@@ -1,0 +1,78 @@
+<main class="pagina">
+  <header class="cabecalho">
+    <h1>Design system da Vitrine</h1>
+    <button mat-stroked-button type="button" (click)="aoAlternarTema()">
+      <mat-icon>{{ ehTemaEscuro() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+      {{ ehTemaEscuro() ? 'Tema claro' : 'Tema escuro' }}
+    </button>
+  </header>
+
+  <section class="secao">
+    <h2>Botões</h2>
+    <div class="linha">
+      <button mat-flat-button type="button">Adicionar ao carrinho</button>
+      <button mat-button matButton="tonal" type="button">Comprar agora</button>
+      <button mat-stroked-button type="button">Ver todas as ofertas</button>
+      <button mat-button type="button">Limpar filtros</button>
+      <button mat-flat-button type="button" disabled>Indisponível</button>
+      <button mat-flat-button type="button" [disabled]="ehCarregando()" (click)="aoSimularCarregamento()">
+        @if (ehCarregando()) {
+          <mat-spinner diameter="18" aria-label="Carregando" />
+        } @else {
+          Simular carregamento
+        }
+      </button>
+    </div>
+  </section>
+
+  <section class="secao">
+    <h2>Campo de texto</h2>
+    <mat-form-field appearance="outline" class="campo">
+      <mat-label>Buscar produtos</mat-label>
+      <input matInput [formControl]="campoBusca" placeholder="Busque por produtos, marcas e muito mais" />
+      <mat-icon matSuffix>search</mat-icon>
+      @if (campoBusca.hasError('minlength')) {
+        <mat-error>Digite pelo menos 2 caracteres</mat-error>
+      } @else if (campoBusca.hasError('required')) {
+        <mat-error>Digite o que você procura</mat-error>
+      }
+    </mat-form-field>
+  </section>
+
+  <section class="secao">
+    <h2>Chips de filtros ativos</h2>
+    <mat-chip-set aria-label="Filtros ativos">
+      @for (filtro of filtrosAtivos(); track filtro) {
+        <mat-chip (removed)="aoRemoverFiltro(filtro)">
+          {{ filtro }}
+          <button matChipRemove [attr.aria-label]="'Remover filtro ' + filtro">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip>
+      } @empty {
+        <span>Nenhum filtro ativo</span>
+      }
+    </mat-chip-set>
+  </section>
+
+  <section class="secao">
+    <h2>Preço, desconto e avaliação</h2>
+    <div class="linha alinhada-no-topo">
+      <div class="exemplo">
+        <app-selo-desconto [preco]="279.9" [precoOriginal]="449.9" />
+        <app-avaliacao-estrelas [nota]="4.7" [total]="2384" />
+        <app-preco [preco]="279.9" [precoOriginal]="449.9" />
+      </div>
+      <div class="exemplo">
+        <app-selo-desconto [preco]="39.9" />
+        <app-avaliacao-estrelas [nota]="4.3" [total]="6881" />
+        <app-preco [preco]="39.9" />
+      </div>
+      <div class="exemplo">
+        <app-selo-desconto [preco]="1599" [precoOriginal]="1999" />
+        <app-avaliacao-estrelas [nota]="4.8" [total]="5102" />
+        <app-preco [preco]="1599" [precoOriginal]="1999" />
+      </div>
+    </div>
+  </section>
+</main>

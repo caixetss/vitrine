@@ -1,0 +1,18 @@
+.avaliacao {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font: var(--mat-sys-body-small);
+}
+
+.estrela {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+  font-variation-settings: 'FILL' 1;
+  color: var(--cor-estrela);
+}
+
+.total {
+  color: var(--mat-sys-on-surface-variant);
+}

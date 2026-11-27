@@ -71,6 +71,8 @@ src/app/
 ```
 
 - **Componentes de página** (`features/`) buscam dados. **Componentes de exibição** (`shared/`) só recebem dados e avisam eventos.
+- Visual com **Angular Material** (Material Design 3): tema gerado a partir do roxo dos mockups, fonte Inter e tema escuro prontos. Só o que o Material não tem vira componente nosso, em `shared/`: `preco`, `selo-desconto` e `avaliacao-estrelas`.
+- Regras de preço (parcelamento, desconto, Pix) ficam em `util/regras-de-preco.ts`, com testes.
 - Estado com **Signals**, que já vêm no Angular.
 - Filtros, ordenação e página ficam na **URL**: dá para compartilhar o link e voltar no navegador sem perder a busca.
 - Cada página só é carregada quando o usuário entra nela (lazy loading).
@@ -100,6 +102,7 @@ Cada linha é uma escolha: o que foi decidido, o que ficou de fora, por quê, e 
 | D11 | Swagger desligado por padrão, ligado no perfil `dev` | ligado sempre | esquecer uma configuração no deploy não expõe a documentação | precisa do perfil `dev` (ou `SWAGGER_ATIVO=true`) para ver |
 | D12 | Testes de integração com PostgreSQL no Docker (Testcontainers) | banco em memória (H2) | testa no mesmo banco de produção, com as migrations reais | precisa do Docker aberto |
 | D13 | Estado do front com Signals | NgRx | o estado é pequeno (carrinho e filtros) | se crescer muito, reavaliar |
+| D16 | Componentes do Angular Material; componentes próprios só para o que ele não tem | componentes todos próprios; misturar outra biblioteca (PrimeNG) | menos código, acessível e com tema escuro de graça; misturar bibliotecas daria dois visuais e mais peso | o visual segue o Material Design, parecido com os mockups mas não idêntico |
 | D14 | Carrinho no `localStorage` | tabela no banco | o MVP não tem login | com login (#22), migrar o carrinho para a API |
 | D15 | `/categorias` sem paginação | paginar | são poucas dezenas de itens | nenhum |
 

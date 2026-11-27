@@ -91,7 +91,7 @@ No MVP, o catálogo vem de dados de exemplo nas migrations: 41 produtos em 10 ca
 | Banco | PostgreSQL 17, Flyway (migrations) |
 | Documentação da API | springdoc-openapi (Swagger) |
 | Testes | JUnit 5, Mockito, AssertJ, Testcontainers, Datafaker |
-| Frontend | Angular 22 (standalone components, signals), TypeScript, SCSS |
+| Frontend | Angular 22 (standalone components, signals), Angular Material 22 (Material Design 3), TypeScript, SCSS |
 | Infra | Docker Compose, GitHub Actions |
 
 ## Documentação
