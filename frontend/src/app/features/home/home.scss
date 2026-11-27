@@ -1,0 +1,242 @@
+:host {
+  display: block;
+}
+
+.secao {
+  display: block;
+  margin-top: 40px;
+}
+
+.beneficios {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 16px 0 0;
+  padding: 0;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: var(--mat-sys-corner-large);
+  list-style: none;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+
+    & + li {
+      border-left: 1px solid var(--mat-sys-outline-variant);
+    }
+
+    div {
+      display: flex;
+      flex-direction: column;
+    }
+
+    strong {
+      font: var(--mat-sys-label-large);
+    }
+
+    span {
+      font: var(--mat-sys-body-small);
+      color: var(--mat-sys-on-surface-variant);
+    }
+  }
+
+  mat-icon {
+    flex-shrink: 0;
+    color: var(--mat-sys-primary);
+  }
+}
+
+.topo-secao h2 {
+  margin: 0 0 16px;
+  font: var(--mat-sys-title-large);
+  font-weight: 700;
+}
+
+.categorias {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--mat-sys-on-surface);
+    text-align: center;
+    text-decoration: none;
+    font: var(--mat-sys-body-small);
+
+    &:hover .bolinha {
+      background-color: var(--mat-sys-primary-container);
+      color: var(--mat-sys-on-primary-container);
+    }
+  }
+}
+
+.bolinha {
+  display: grid;
+  width: 56px;
+  height: 56px;
+  place-items: center;
+  border-radius: 50%;
+  background-color: var(--mat-sys-surface-container);
+  color: var(--mat-sys-on-surface-variant);
+  transition: background-color 150ms;
+}
+
+.contador {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: var(--mat-sys-corner-full);
+  background-color: var(--cor-fundo-desconto);
+  color: var(--cor-desconto);
+  font: var(--mat-sys-label-large);
+  font-variant-numeric: tabular-nums;
+
+  mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+  }
+}
+
+.campanhas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.campanha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 28px;
+  border-radius: var(--mat-sys-corner-extra-large);
+  color: var(--mat-sys-on-surface);
+  text-decoration: none;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  strong {
+    font: var(--mat-sys-headline-small);
+    font-weight: 700;
+  }
+
+  > mat-icon {
+    width: 72px;
+    height: 72px;
+    font-size: 72px;
+  }
+}
+
+.home-office {
+  background-color: var(--mat-sys-primary-container);
+
+  strong,
+  > mat-icon {
+    color: var(--mat-sys-primary);
+  }
+}
+
+.cozinha {
+  background-color: var(--mat-sys-surface-container);
+}
+
+.botao-campanha {
+  margin-top: 8px;
+  padding: 8px 20px;
+  border-radius: var(--mat-sys-corner-small);
+  background-color: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+  font: var(--mat-sys-label-large);
+
+  .cozinha & {
+    background-color: var(--mat-sys-inverse-surface);
+    color: var(--mat-sys-inverse-on-surface);
+  }
+}
+
+.newsletter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 32px;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: var(--mat-sys-corner-extra-large);
+  background-color: var(--mat-sys-surface-container-low);
+
+  h2 {
+    margin: 0 0 4px;
+    font: var(--mat-sys-title-large);
+    font-weight: 700;
+  }
+
+  p {
+    margin: 0;
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
+.formulario-newsletter {
+  display: flex;
+  flex: 1;
+  gap: 8px;
+  max-width: 440px;
+
+  input {
+    flex: 1;
+    min-width: 0;
+    height: 44px;
+    padding: 0 16px;
+    border: 1px solid var(--mat-sys-outline-variant);
+    border-radius: var(--mat-sys-corner-small);
+    background-color: var(--mat-sys-surface);
+    color: var(--mat-sys-on-surface);
+    font: var(--mat-sys-body-medium);
+  }
+
+  button {
+    height: 44px;
+  }
+}
+
+.inscrito {
+  font: var(--mat-sys-label-large);
+  color: var(--cor-sucesso) !important;
+}
+
+@media (max-width: 959px) {
+  .campanhas {
+    grid-template-columns: 1fr;
+  }
+
+  .beneficios,
+  .categorias {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .beneficios li {
+    flex: 0 0 240px;
+  }
+
+  .categorias li {
+    flex: 0 0 80px;
+  }
+}

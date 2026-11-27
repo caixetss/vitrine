@@ -1,0 +1,21 @@
+<header class="topo">
+  <h2>{{ titulo() }}</h2>
+  <ng-content />
+  <a mat-button class="ver-todos" routerLink="/busca" [queryParams]="{ ordem: ordemDoLinkVerTodos() }">Ver todos</a>
+</header>
+
+@if (temErro()) {
+  <p class="aviso">Não foi possível carregar estes produtos agora.</p>
+} @else {
+  <div class="grade">
+    @if (ehCarregando()) {
+      @for (esqueleto of esqueletos; track esqueleto) {
+        <app-produto-card-esqueleto />
+      }
+    } @else {
+      @for (produto of produtos(); track produto.id) {
+        <app-produto-card [produto]="produto" />
+      }
+    }
+  </div>
+}

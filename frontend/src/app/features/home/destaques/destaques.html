@@ -1,0 +1,44 @@
+<section class="banner" aria-roledescription="carrossel" aria-label="Destaques">
+  @for (slide of slides; track slide.titulo; let indice = $index) {
+    <div class="slide" [class.ativo]="indice === indiceDoSlide()" [attr.aria-hidden]="indice !== indiceDoSlide()">
+      <div class="texto-banner">
+        <span class="selo-banner">{{ slide.selo }}</span>
+        <h1>{{ slide.titulo }}</h1>
+        <p>{{ slide.texto }}</p>
+        <a mat-flat-button class="botao-claro" [routerLink]="slide.link" [queryParams]="slide.queryParams" [tabindex]="indice === indiceDoSlide() ? 0 : -1">
+          Ver ofertas
+        </a>
+      </div>
+      <div class="ilustracao" aria-hidden="true">
+        @for (icone of slide.icones; track icone) {
+          <span class="quadro"><mat-icon>{{ icone }}</mat-icon></span>
+        }
+      </div>
+    </div>
+  }
+  <div class="pontos">
+    @for (slide of slides; track slide.titulo; let indice = $index) {
+      <button
+        type="button"
+        class="ponto"
+        [class.ativo]="indice === indiceDoSlide()"
+        [attr.aria-label]="'Ver destaque ' + (indice + 1)"
+        [attr.aria-current]="indice === indiceDoSlide()"
+        (click)="indiceDoSlide.set(indice)"></button>
+    }
+  </div>
+</section>
+
+<div class="cards-laterais">
+  <a class="card-lateral black-friday" routerLink="/busca" [queryParams]="{ ordem: 'maior-desconto' }">
+    <span class="sobretitulo">Até 27 de novembro</span>
+    <strong>Esquenta Black Friday</strong>
+    <span>Ofertas novas todos os dias até o grande dia.</span>
+    <span class="link-card">Ver ofertas <mat-icon aria-hidden="true">chevron_right</mat-icon></span>
+  </a>
+  <div class="card-lateral cupom">
+    <span class="selo-cupom">PRIMEIRACOMPRA</span>
+    <strong>10% off na sua primeira compra</strong>
+    <span>Válido para pedidos acima de R$ 100.</span>
+  </div>
+</div>

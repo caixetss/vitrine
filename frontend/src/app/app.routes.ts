@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 
-const carregaEmConstrucao = () => import('./features/em-construcao/em-construcao').then((m) => m.EmConstrucao);
 const carregaListagem = () => import('./features/listagem/listagem').then((m) => m.Listagem);
 
 export const routes: Routes = [
@@ -8,7 +7,7 @@ export const routes: Routes = [
     path: '',
     loadComponent: () => import('./layout/layout-principal/layout-principal').then((m) => m.LayoutPrincipal),
     children: [
-      { path: '', loadComponent: carregaEmConstrucao, data: { titulo: 'Página inicial' } },
+      { path: '', loadComponent: () => import('./features/home/home').then((m) => m.Home) },
       { path: 'categoria/:slug', loadComponent: carregaListagem },
       { path: 'busca', loadComponent: carregaListagem },
       { path: 'produto/:slug', loadComponent: () => import('./features/produto/produto').then((m) => m.Produto) },

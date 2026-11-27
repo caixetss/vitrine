@@ -1,0 +1,84 @@
+<app-destaques />
+
+<ul class="beneficios">
+  @for (beneficio of beneficios; track beneficio.titulo) {
+    <li>
+      <mat-icon aria-hidden="true">{{ beneficio.icone }}</mat-icon>
+      <div>
+        <strong>{{ beneficio.titulo }}</strong>
+        <span>{{ beneficio.texto }}</span>
+      </div>
+    </li>
+  }
+</ul>
+
+<section class="secao" aria-labelledby="titulo-categorias">
+  <header class="topo-secao">
+    <h2 id="titulo-categorias">Navegue por categorias</h2>
+  </header>
+  <ul class="categorias">
+    @for (categoria of categorias.hasValue() ? categorias.value() : []; track categoria.id) {
+      <li>
+        <a [routerLink]="['/categoria', categoria.slug]">
+          <span class="bolinha"><mat-icon aria-hidden="true">{{ categoria.icone ?? 'category' }}</mat-icon></span>
+          {{ categoria.nome }}
+        </a>
+      </li>
+    }
+  </ul>
+</section>
+
+<app-vitrine-produtos
+  class="secao"
+  titulo="Ofertas do dia"
+  ordemDoLinkVerTodos="maior-desconto"
+  [produtos]="ofertasDoDia.hasValue() ? ofertasDoDia.value().itens : []"
+  [ehCarregando]="ofertasDoDia.isLoading()"
+  [temErro]="!!ofertasDoDia.error()">
+  <span class="contador" role="timer" aria-label="Tempo até o fim das ofertas">
+    <mat-icon aria-hidden="true">schedule</mat-icon>
+    Termina em {{ tempoAteFimDasOfertas() }}
+  </span>
+</app-vitrine-produtos>
+
+<div class="campanhas secao">
+  <a class="campanha home-office" routerLink="/categoria/informatica">
+    <div>
+      <strong>Monte seu home office</strong>
+      <span>Notebooks, monitores e cadeiras em até 10x sem juros.</span>
+      <span class="botao-campanha">Explorar</span>
+    </div>
+    <mat-icon aria-hidden="true">laptop</mat-icon>
+  </a>
+  <a class="campanha cozinha" routerLink="/categoria/casa-e-cozinha">
+    <div>
+      <strong>Cozinha completa</strong>
+      <span>Cafeteiras, airfryers e panelas a partir de R$ 59,90.</span>
+      <span class="botao-campanha">Explorar</span>
+    </div>
+    <mat-icon aria-hidden="true">coffee</mat-icon>
+  </a>
+</div>
+
+<app-vitrine-produtos
+  class="secao"
+  titulo="Mais vendidos da semana"
+  ordemDoLinkVerTodos="mais-vendidos"
+  [produtos]="maisVendidos.hasValue() ? maisVendidos.value().itens : []"
+  [ehCarregando]="maisVendidos.isLoading()"
+  [temErro]="!!maisVendidos.error()" />
+
+<section class="newsletter secao" aria-labelledby="titulo-newsletter">
+  <div>
+    <h2 id="titulo-newsletter">Receba ofertas exclusivas</h2>
+    <p>Cadastre seu e-mail e ganhe 10% off na primeira compra.</p>
+  </div>
+  @if (ehEmailInscrito()) {
+    <p class="inscrito" role="status">O envio de ofertas estará disponível em breve. Obrigado!</p>
+  } @else {
+    <form class="formulario-newsletter" (submit)="aoInscreverNaNewsletter($event)">
+      <input type="email" required placeholder="seuemail@exemplo.com" aria-label="Seu e-mail" />
+      <button mat-flat-button type="submit">Quero receber</button>
+    </form>
+  }
+</section>

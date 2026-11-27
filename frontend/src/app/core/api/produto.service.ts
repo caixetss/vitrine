@@ -19,6 +19,10 @@ export class ProdutoService {
     });
   }
 
+  buscaListaProdutoDaVitrine(ordem: OrdemProduto, tamanho: number) {
+    return httpResource<Pagina<ProdutoResumo>>(() => ({ url: `${environment.apiUrl}/produtos`, params: { ordem, tamanho } }));
+  }
+
   buscaIndividualProduto(slug: () => string) {
     return httpResource<ProdutoDetalhe>(() => `${environment.apiUrl}/produtos/${slug()}`);
   }
